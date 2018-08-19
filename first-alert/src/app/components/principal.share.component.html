@@ -1,0 +1,9 @@
+<canvas #image_canvas id="image_canvas" 
+style="background:url(./assets/imagen.png);
+background-size: 100% 100%;"
+    width="1000" height="400"
+    (click)="addOnClick($event)" (mousedown)="mdEvent($event)" (mouseup)="muEvent($event)"
+        (mousemove)="mmEvent($event)"></canvas>
+<button (click)="limpiarLinea()">Limpiar</button>
+<button (click)="guardarPuntos()">Guardar</button>
+<button (click)="contruirPuntos()">Construir</button>
