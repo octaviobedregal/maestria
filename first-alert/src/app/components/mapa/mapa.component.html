@@ -1,0 +1,58 @@
+<h1>Mapa
+    <label class="text-primary">{{mapa.nombre}}</label>
+    <small class="ml-md-1">
+        <button [routerLink]="['/mapas']" class="btn btn-outline-danger rounded-circle">
+            <i class="fa fa-reply"></i>
+        </button>
+    </small>
+</h1>
+<div class="row">
+    <div class="col-md-12">
+    </div>
+    <div class="col-md-12 text-right">
+        <input type="file" #file (change)="leerPath($event)" hidden>
+        <button type="button" class="btn btn-primary" (click)="file.click()" [disabled]="!formMapa.form.valid">
+            <i class="fa fa-upload">&nbsp;</i>Subir Mapa
+        </button>
+        &nbsp;
+        <button type="button" class="btn btn-primary" (click)="agregarNodo()" [disabled]="!formMapa.form.valid">
+            <i class="fa fa-plus">&nbsp;</i>Agregar Nodo
+        </button>
+        &nbsp;
+        <button type="button" class="btn btn-primary" (click)="unirNodos()" [disabled]="!formMapa.form.valid">
+            <i class="fa fa-adjust">&nbsp;</i>Unir Nodos
+        </button>
+    </div>
+    <div class="col-md-6">
+        <div id="network" [style.background-image]="backgroundImg"></div>
+    </div>
+    <div class="col-md-6">
+        <h3>Nodos:</h3>
+        <table #dtNodos class="table table-sm row-border hover"></table>
+        <h3>Caminos:</h3>
+        <table #dtCaminos class="table table-sm row-border hover"></table>
+    </div>
+    <div class="col-md-12">
+        <form #formMapa="ngForm">
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <h4>Nombre:</h4>
+                </div>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" required>
+                </div>
+                <div class="col-md-2">
+                    <h4>Descripción:</h4>
+                </div>
+                <div class="col-md-4">
+                    <textarea class="form-control" required></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-12 text-right">
+        <button type="button" class="btn btn-primary" (click)="guardar()" [disabled]="!formMapa.form.valid">
+            <i class="fa fa-save">&nbsp;</i>Guardar
+        </button>
+    </div>
+</div>

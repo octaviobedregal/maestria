@@ -1,0 +1,21 @@
+<h1>Mantenimiento de Mapas
+    <small class="ml-md-1">
+        <button [routerLink]="['/inicio']" class="btn btn-outline-danger rounded-circle">
+            <i class="fa fa-home"></i>
+        </button>
+    </small>
+</h1>
+<div class="row">
+    <div class="col-md-6">
+        <h4>Mapas:</h4>
+    </div>
+    <div class="col-md-6 text-right">
+        <button type="button" class="btn btn-primary" (click)="nuevo()">
+            <i class="fa fa-plus">&nbsp;</i>Nuevo
+        </button>
+    </div>
+    <div class="col-md-12">
+        <table #dtMapas class="table table-sm row-border hover">
+        </table>
+    </div>
+</div>

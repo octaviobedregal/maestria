@@ -1,0 +1,27 @@
+<div class="row">
+    <div class="col-lg-4 col-sm-6 offset-lg-4 offset-sm-3">
+        <div class="login-panel panel panel-default">
+            <div class="panel-heading">
+                <h1>Ingreso al Sistema</h1>
+            </div>
+            <div class="panel-body">
+                <form role="form">
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Nombre" name="nombre" type="text" autofocus tabindex="1" required="true" 
+                            [(ngModel)]="usuario.nombre" name="nombre">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Clave" name="clave" type="password" tabindex="2" required="true" 
+                            [(ngModel)]="usuario.clave" name="clave">
+                        </div>
+                        <div class="alert alert-danger" ng-show="showMensajeError">{{mensaje}}</div>
+                        <button (click)="ingresarSistema()" class="btn btn-lg btn-success btn-block" tabindex="4">Iniciar
+                            sesión
+                        </button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

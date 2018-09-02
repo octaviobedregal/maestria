@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+  <session-factory>
+    <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+    <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/first_alert</property>
+    <property name="hibernate.connection.username">postgres</property>
+    <property name="hibernate.connection.password">123456</property>
+    <property name="hibernate.current_session_context_class">thread</property>
+    <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+    <property name="hibernate.enable_lazy_load_no_trans">true</property>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <property name="hibernate.show_sql">true</property>
+    <mapping class="modelo.pojo.Usuario"/>
+    <mapping class="modelo.pojo.Mapa"/>
+    <mapping class="modelo.pojo.Nodo"/>
+    <mapping class="modelo.pojo.Camino"/>
+    <mapping class="modelo.pojo.Companhia"/>
+    <mapping class="modelo.pojo.Emergencia"/>
+    <mapping class="modelo.pojo.Rol"/>
+  </session-factory>
+</hibernate-configuration>

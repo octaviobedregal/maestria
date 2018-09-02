@@ -9,28 +9,44 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { PrincipalShareComponent } from './components/principal.share.component';
+import { MapasComponent } from './components/mapa/mapas.component';
+import { MapaService } from './services/mapa.service';
+import { HttpModule } from '@angular/http';
+import { DataTablesModule } from 'angular-datatables';
+import { FormsModule } from '@angular/forms';
+import { MapaComponent } from './components/mapa/mapa.component';
+import { InicioComponent } from './components/inicio/inicio.component';
+import { AutenticacionService } from './services/autenticacion.services';
+import { APP_ROUNTING } from './app.routes';
+import { Guardian } from './services/guardian.services';
+import { IngresoComponent } from './components/usuario/ingreso.component';
 
 
-const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'inicio' },
-  { path: 'inicio', component: PrincipalShareComponent }
-];
 
 @NgModule({
   declarations: [
     AppComponent,
-    PrincipalShareComponent
+    IngresoComponent,
+    InicioComponent,
+    MapasComponent,
+    MapaComponent
   ],
   imports: [
     BrowserModule,
     AngularFontAwesomeModule,
-    RouterModule.forRoot(routes),
+    FormsModule,
+    DataTablesModule,
+    HttpModule,
+    APP_ROUNTING,
     BsDropdownModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    MapaService,
+    AutenticacionService,
+    Guardian
+  ],
   bootstrap: [AppComponent],
   exports: [RouterModule, BsDropdownModule, TooltipModule, ModalModule]
 })
