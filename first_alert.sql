@@ -36,16 +36,18 @@ CREATE TABLE mapa (
 
 CREATE TABLE nodo (
     id BIGSERIAL NOT NULL,
-    codigo CHARACTER VARYING NOT NULL,
     id_mapa BIGINT NOT NULL,
-    x BIGINT NOT NULL,
-    y BIGINT NOT NULL,
+    numero INTEGER NOT NULL,
+    codigo CHARACTER VARYING NOT NULL,
+    x INTEGER NOT NULL,
+    y INTEGER NOT NULL,
     objetivo BOOLEAN NOT NULL
 );
 
 
 CREATE TABLE camino (
     id BIGSERIAL NOT NULL,
+    id_mapa BIGINT NOT NULL,
     id_nodo_inicio BIGINT NOT NULL,
     id_nodo_fin BIGINT NOT NULL,
     peso INTEGER NOT NULL
@@ -72,9 +74,15 @@ ALTER TABLE usuario ADD CONSTRAINT FK_usuario_companhia FOREIGN KEY (id_companhi
 ALTER TABLE usuario ADD CONSTRAINT FK_usuario_rol FOREIGN KEY (id_rol) REFERENCES rol(id);
 ALTER TABLE mapa ADD CONSTRAINT FK_mapa_companhia FOREIGN KEY (id_companhia) REFERENCES companhia(id);
 ALTER TABLE nodo ADD CONSTRAINT FK_nodo_mapa FOREIGN KEY (id_mapa) REFERENCES mapa(id);
+ALTER TABLE camino ADD CONSTRAINT FK_camino_nodo_mapa FOREIGN KEY (id_mapa) REFERENCES mapa(id);
 ALTER TABLE camino ADD CONSTRAINT FK_camino_nodo_inicio FOREIGN KEY (id_nodo_inicio) REFERENCES nodo(id);
 ALTER TABLE camino ADD CONSTRAINT FK_camino_nodo_fin FOREIGN KEY (id_nodo_fin) REFERENCES nodo(id);
 ALTER TABLE emergencia ADD CONSTRAINT FK_emergencia_mapa FOREIGN KEY (id_mapa) REFERENCES mapa(id);
 ALTER TABLE emergencia ADD CONSTRAINT FK_emergencia_nodo FOREIGN KEY (id_nodo) REFERENCES nodo(id);
 
 
+
+INSERT INTO companhia(nombre)
+ VALUES ('Compañia 1');
+
+ insert into public.mapa (descripcion, id_companhia, nombre, path) values ('', 1,'', '');

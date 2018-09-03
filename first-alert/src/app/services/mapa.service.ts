@@ -12,12 +12,16 @@ export class MapaService {
     public listar() {
         return this.http.get(this.API_ENDPOINT + '/listar');
     }
+
+    public insertar(mapa) {
+        let body = mapa;
+        return this.http.post(this.API_ENDPOINT + '/crear', body);
+    }
+
+    public buscar(id) {
+        return this.http.get(this.API_ENDPOINT + '/buscar/'+id);
+    }
     /*
-        public insertar(mapa) {
-            let body = mapa;
-            return this.http.post(this.API_ENDPOINT, body);
-        }
-    
         public editar(mapa) {
             let body = mapa;
             return this.http.put(this.API_ENDPOINT + '/' + mapa.id, body);

@@ -15,7 +15,7 @@ export class MapaComponent implements OnInit {
   network: any;
   contNodo: number = 1;
   contCamino: number = 1;
-  pathFoto: any;
+  backgroundImg: SafeStyle;
 
 
   controlDtNodos: any;
@@ -24,7 +24,7 @@ export class MapaComponent implements OnInit {
   controlDtCaminos: any;
   @ViewChild('dtCaminos') dtCaminos: ElementRef;
 
-  mapa: any = { nombre: '', descripcion: '' };
+  mapa: any = { idCompanhia: 1, nuevoPath: false, path: '', contentPath: '', nombre: '-', descripcion: '--' };
 
 
 
@@ -38,6 +38,11 @@ export class MapaComponent implements OnInit {
     private sanitizer: DomSanitizer) {
     this.route.params.subscribe(parametros => {
       this.id = parametros['id'];
+      this.mapaService.buscar(this.id).subscribe((data) => {
+        console.log(data.json());
+      }, error => {
+        console.log(error);
+      })
     });
   }
 
@@ -66,13 +71,7 @@ export class MapaComponent implements OnInit {
           width: '5%',
           targets: 0
         }, {
-          title: "#",
-          render: function (data, type, row, meta) {
-            return meta.row + meta.settings._iDisplayStart + 1;
-          },
-          width: '5%'
-        }, {
-          title: 'Nombre',
+          title: 'Codigo',
           data: 'label',
           width: '35%'
         }, {
@@ -242,8 +241,10 @@ export class MapaComponent implements OnInit {
       width: '100%',
       locale: 'en',
       locales: locales,
-      clickToUse: true,
-
+      clickToUse: false,
+      "edges": {
+        "smooth": false
+      },
       physics: {
         enabled: false,     // Stops node movement during display
         stabilization: {    // Determines an initial layout; enabled by default
@@ -251,10 +252,13 @@ export class MapaComponent implements OnInit {
           iterations: 1000
         }
       },      // defined in the physics module.
+      "interaction": {
+        "dragView": false,
+        zoomView: false
+      }
     };
 
     this.network = new vis.Network(container, data);
-
     this.network.setOptions(options);
 
     this.network.on('click', function (properties) {
@@ -267,7 +271,8 @@ export class MapaComponent implements OnInit {
 
   agregarNodo() {
     try {
-      let nodo = { id: this.contNodo, label: 'x=200, y=200', x: 50, y: 100 };
+      let label = 'BL' + this.contNodo.toString();
+      let nodo = { id: this.contNodo, label: label, x: 50, y: 100 };
       this.nodes.add(nodo);
       this.controlDtNodos.row.add(nodo).draw();
       this.contNodo++;
@@ -302,19 +307,48 @@ export class MapaComponent implements OnInit {
     this.contCamino++;
   }
 
-  backgroundImg: SafeStyle;
   leerPath(event: any) {
     if (event.target.files && event.target.files[0]) {
       var reader = new FileReader();
       reader.onload = (event: ProgressEvent) => {
-        this.pathFoto = (<FileReader>event.target).result;
-        this.backgroundImg = 'url(' + this.pathFoto + ')';
+        this.mapa.contentPath = (<FileReader>event.target).result;
+        this.backgroundImg = 'url(' + this.mapa.contentPath + ')';
+        this.mapa.nuevoPath = true;
       }
       reader.readAsDataURL(event.target.files[0]);
     }
   }
 
   guardarMapa() {
+    let nodos = this.controlDtNodos.rows().data();
+    let caminos = this.controlDtCaminos.rows().data();
+    let nodosServer: any = [];
+    let caminosServer: any = [];
 
+    for (let nodoTmp of nodos) {
+      let nodoServerTmp: any = {};
+      nodoServerTmp.numero = nodoTmp.id;
+      nodoServerTmp.codigo = nodoTmp.label;
+      nodoServerTmp.x = nodoTmp.x;
+      nodoServerTmp.y = nodoTmp.y;
+      nodosServer.push(nodoServerTmp);
+    }
+
+    for (let caminoTmp of caminos) {
+      let caminoServerTmp: any = {};
+      caminoServerTmp.idNodoFin = caminoTmp.labelFin;
+      caminoServerTmp.idNodoInicio = caminoTmp.labelInicio;
+      caminoServerTmp.peso = caminoTmp.peso;
+      caminosServer.push(caminoServerTmp);
+    }
+
+    this.mapa.nodos = nodosServer;
+    this.mapa.caminos = caminosServer;
+
+    this.mapaService.insertar(this.mapa).subscribe((data) => {
+      console.log(data);
+    }, error => {
+      console.log(error);
+    })
   }
 }

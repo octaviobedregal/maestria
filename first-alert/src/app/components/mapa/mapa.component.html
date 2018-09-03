@@ -24,7 +24,7 @@
         </button>
     </div>
     <div class="col-md-6">
-        <div id="network" [style.background-image]="backgroundImg"></div>
+        <div id="network" [style.background-image]="backgroundImg" ></div>
     </div>
     <div class="col-md-6">
         <h3>Nodos:</h3>
@@ -39,19 +39,25 @@
                     <h4>Nombre:</h4>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" required>
+                    <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel" required>
+                    <div class="text-danger" [hidden]="!nombre.invalid">
+                        Campo Obligatorio
+                    </div>
                 </div>
                 <div class="col-md-2">
                     <h4>Descripción:</h4>
                 </div>
                 <div class="col-md-4">
-                    <textarea class="form-control" required></textarea>
+                    <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel" required></textarea>
+                    <div class="text-danger" [hidden]="!descripcion.invalid">
+                            Campo Obligatorio
+                    </div>
                 </div>
             </div>
         </form>
     </div>
     <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-primary" (click)="guardar()" [disabled]="!formMapa.form.valid">
+        <button type="button" class="btn btn-primary" (click)="guardarMapa()" [disabled]="!formMapa.form.valid">
             <i class="fa fa-save">&nbsp;</i>Guardar
         </button>
     </div>
