@@ -91,18 +91,24 @@ public class MapaDao implements IMapaDao {
 
     @Override
     public Mapa buscar(long id) {
-        Mapa producto = null;
+        Mapa mapa = null;
         try {
             Session sesion = HibernateUtil.getSessionFactory().openSession();
             sesion.beginTransaction();
-            producto = (Mapa) sesion.load(Mapa.class, id);
-            Hibernate.initialize(producto);
+            mapa = (Mapa) sesion.load(Mapa.class, id);
+            Query queryNodos = sesion.createQuery("FROM Nodo WHERE idMapa=:idMapa  ORDER BY id");
+            Query queryCaminos = sesion.createQuery("FROM Camino WHERE idMapa=:idMapa  ORDER BY id");
+            List<Camino> caminos = queryCaminos.setLong("idMapa", id).list();
+            List<Nodo> nodos = queryNodos.setLong("idMapa", id).list();
+            mapa.setNodos(nodos);
+            mapa.setCaminos(caminos);
+            Hibernate.initialize(mapa);
             sesion.getTransaction().commit();
             sesion.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return producto;
+        return mapa;
     }
 
     @Override

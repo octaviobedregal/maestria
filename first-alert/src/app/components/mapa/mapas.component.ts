@@ -15,18 +15,7 @@ export class MapasComponent implements OnInit, OnDestroy {
     constructor(private mapaService: MapaService,
         private router: Router,
         private _ngZone: NgZone) {
-            const toast = Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                type: 'warning',
-                showConfirmButton: false,
-                timer: 3000
-              });
-              
-              toast({
-                type: 'success',
-                title: 'Signed in successfully'
-              })
+            
 
     }
 
@@ -70,6 +59,16 @@ export class MapasComponent implements OnInit, OnDestroy {
                 title: "",
                 render: function (data, type, row, meta) {
                     var btn = '<div style="text-align:center;"><button type="button" class="btn btn-primary btn-sm"'
+                    btn += 'onclick="functions.verEmergencia(' + row.id + ')">'
+                    btn += '<i class="fa fa-edit">&nbsp;</i>Emergencia'
+                    btn += '</button></div>';
+                    return btn;
+                },
+                width: '5%'
+            }, {
+                title: "",
+                render: function (data, type, row, meta) {
+                    var btn = '<div style="text-align:center;"><button type="button" class="btn btn-primary btn-sm"'
                     btn += 'onclick="functions.editar(' + row.id + ')">'
                     btn += '<i class="fa fa-edit">&nbsp;</i>Editar'
                     btn += '</button></div>';
@@ -99,6 +98,8 @@ export class MapasComponent implements OnInit, OnDestroy {
         window.functions = window.functions || {};
         window.functions.editar = this.ver.bind(this);
         window.functions.eliminar = this.eliminar.bind(this);
+        window.functions.verEmergencia = this.verEmergencia.bind(this);
+        
 
         this.controlDtMapas = $(this.dtMapas.nativeElement).DataTable(optMapas);
     }
@@ -110,6 +111,12 @@ export class MapasComponent implements OnInit, OnDestroy {
     ver(id) {
         this._ngZone.run(() => {
             this.router.navigate(['/mapa/' + id]);
+        });
+    }
+
+    verEmergencia(id) {
+        this._ngZone.run(() => {
+            this.router.navigate(['/emergencia/' + id]);
         });
     }
 

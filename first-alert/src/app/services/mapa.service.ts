@@ -21,6 +21,11 @@ export class MapaService {
     public buscar(id) {
         return this.http.get(this.API_ENDPOINT + '/buscar/'+id);
     }
+
+    public contruirPathImagen(id) {
+        return (this.API_ENDPOINT + '/ver-imagen/'+id);
+    }
+
     /*
         public editar(mapa) {
             let body = mapa;

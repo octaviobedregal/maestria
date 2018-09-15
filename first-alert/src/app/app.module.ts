@@ -9,7 +9,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { MapasComponent } from './components/mapa/mapas.component';
@@ -22,6 +22,8 @@ import { AutenticacionService } from './services/autenticacion.services';
 import { APP_ROUNTING } from './app.routes';
 import { Guardian } from './services/guardian.services';
 import { IngresoComponent } from './components/usuario/ingreso.component';
+import { EmergenciaComponent } from './components/mapa/emergencia.component';
+import { EmergenciaService } from './services/emergencia.service';
 
 
 
@@ -31,7 +33,8 @@ import { IngresoComponent } from './components/usuario/ingreso.component';
     IngresoComponent,
     InicioComponent,
     MapasComponent,
-    MapaComponent
+    MapaComponent,
+    EmergenciaComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { IngresoComponent } from './components/usuario/ingreso.component';
   ],
   providers: [
     MapaService,
+    EmergenciaService,
     AutenticacionService,
     Guardian
   ],

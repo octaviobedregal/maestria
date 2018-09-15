@@ -4,12 +4,14 @@ import { MapasComponent } from "./components/mapa/mapas.component";
 import { Guardian } from "./services/guardian.services";
 import { IngresoComponent } from "./components/usuario/ingreso.component";
 import { MapaComponent } from "./components/mapa/mapa.component";
+import { EmergenciaComponent } from "./components/mapa/emergencia.component";
 
 const APP_ROUTES: Routes = [
     { path: 'ingreso', component: IngresoComponent },
     { path: 'inicio', component: InicioComponent, canActivate: [Guardian] },
     { path: 'mapas', component: MapasComponent, canActivate: [Guardian] },
     { path: 'mapa/:id', component: MapaComponent, canActivate: [Guardian] },
+    { path: 'emergencia/:id', component: EmergenciaComponent, canActivate: [Guardian] },
     { path: '**', pathMatch: 'full', redirectTo: 'ingreso' },
     { path: '', pathMatch: 'full', redirectTo: 'ingreso' },
 

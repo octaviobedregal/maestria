@@ -9,6 +9,7 @@
 "><context:annotation-config/>
 <bean class="controlador.JsonTransformerImplJackson" />
     <bean class="modelo.dao.MapaDao" />
+    <bean class="modelo.dao.EmergenciaDao" />
     
 
     <!--bean id="propertyConfigurer"
