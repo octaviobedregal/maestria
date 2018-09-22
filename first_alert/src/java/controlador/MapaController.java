@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.dao.IMapaDao;
+import modelo.dao.impl.Node;
+import modelo.dao.impl.RutaMinimaDao;
 import modelo.pojo.Mapa;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -137,11 +139,13 @@ public class MapaController {
         }
     }
 
-    @RequestMapping(value = "/mapa/autocompletar/{criterio}", method = RequestMethod.GET, produces = "application/json")
-    public void autocompletar(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @PathVariable("criterio") String criterio) throws IOException {
+    @RequestMapping(value = "/mapa/calcular-ruta-minima/{posX}/{posY}", method = RequestMethod.GET, produces = "application/json")
+    public void calcularRutaMinima(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @PathVariable("posX") int posX, @PathVariable("posY") int posY) throws IOException {
         PrintWriter out = httpServletResponse.getWriter();
         try {
-            List<Mapa> lista = mapaDao.autocompletar(criterio);
+            //List<Mapa> lista = mapaDao.autocompletar(criterio);
+            RutaMinimaDao dao = new RutaMinimaDao();
+            List<Node> lista = dao.calcularRutaMinima(posX, posY);
             String jsonSalida = jsonTransformer.toJson(lista);
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             httpServletResponse.setContentType("application/json; charset=UTF-8");
@@ -155,4 +159,5 @@ public class MapaController {
         }
 
     }
+
 }

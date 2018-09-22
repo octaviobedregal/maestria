@@ -8,8 +8,8 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 "><context:annotation-config/>
 <bean class="controlador.JsonTransformerImplJackson" />
-    <bean class="modelo.dao.MapaDao" />
-    <bean class="modelo.dao.EmergenciaDao" />
+    <bean class="modelo.dao.impl.MapaDao" />
+    <bean class="modelo.dao.impl.EmergenciaDao" />
     
 
     <!--bean id="propertyConfigurer"
