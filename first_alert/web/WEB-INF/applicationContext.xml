@@ -10,6 +10,7 @@
 <bean class="controlador.JsonTransformerImplJackson" />
     <bean class="modelo.dao.impl.MapaDao" />
     <bean class="modelo.dao.impl.EmergenciaDao" />
+    <bean class="modelo.dao.impl.SesionDao" />
     
 
     <!--bean id="propertyConfigurer"

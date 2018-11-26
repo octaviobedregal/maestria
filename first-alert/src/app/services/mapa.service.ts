@@ -4,7 +4,7 @@ import { Http, Headers } from "@angular/http";
 @Injectable()
 export class MapaService {
     API_ENDPOINT: string = 'http://localhost:8090/first_alert/controlador/mapa';
-
+    //API_ENDPOINT: string = 'http://50.63.12.52:8080/first_alert/controlador/mapa';
 
     constructor(private http: Http) {
 
@@ -19,11 +19,11 @@ export class MapaService {
     }
 
     public buscar(id) {
-        return this.http.get(this.API_ENDPOINT + '/buscar/'+id);
+        return this.http.get(this.API_ENDPOINT + '/buscar/' + id);
     }
 
     public contruirPathImagen(id) {
-        return (this.API_ENDPOINT + '/ver-imagen/'+id);
+        return (this.API_ENDPOINT + '/ver-imagen/' + id);
     }
 
     /*

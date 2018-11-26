@@ -1,0 +1,25 @@
+<h1>Ruta Crítica
+    <label class="text-primary">{{mapa.nombre}}</label>
+    <small class="ml-md-1">
+        <button [routerLink]="['/mapas']" class="btn btn-outline-danger rounded-circle">
+            <i class="fa fa-reply"></i>
+        </button>
+    </small>
+</h1>
+<div class="row">
+    <div class="col-md-3">
+        <select class="form-control" [(ngModel)]="nodoSeleccionado" name="nodoSeleccionado">
+            <option *ngFor="let nodo of nodos" [ngValue]="nodo">
+                {{nodo.codigo}}
+            </option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-primary" (click)="buscarRutaCritica()">
+            <i class="fa fa-search">&nbsp;</i>Buscar Ruta Crítica
+        </button>
+    </div>
+    <div class="col-md-6">
+        <div id="network" [style.background-image]="backgroundImg"></div>
+    </div>
+</div>

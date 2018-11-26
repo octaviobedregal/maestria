@@ -15,7 +15,7 @@ export class MapasComponent implements OnInit, OnDestroy {
     constructor(private mapaService: MapaService,
         private router: Router,
         private _ngZone: NgZone) {
-            
+
 
     }
 
@@ -55,6 +55,16 @@ export class MapasComponent implements OnInit, OnDestroy {
                 title: 'Descripción',
                 data: 'descripcion',
                 width: '35%'
+            }, {
+                title: "",
+                render: function (data, type, row, meta) {
+                    var btn = '<div style="text-align:center;"><button type="button" class="btn btn-primary btn-sm"'
+                    btn += 'onclick="functions.verRutaCritica(' + row.id + ')">'
+                    btn += '<i class="fa fa-edit">&nbsp;</i>Ruta Crítica'
+                    btn += '</button></div>';
+                    return btn;
+                },
+                width: '5%'
             }, {
                 title: "",
                 render: function (data, type, row, meta) {
@@ -99,7 +109,7 @@ export class MapasComponent implements OnInit, OnDestroy {
         window.functions.editar = this.ver.bind(this);
         window.functions.eliminar = this.eliminar.bind(this);
         window.functions.verEmergencia = this.verEmergencia.bind(this);
-        
+        window.functions.verRutaCritica = this.verRutaCritica.bind(this);
 
         this.controlDtMapas = $(this.dtMapas.nativeElement).DataTable(optMapas);
     }
@@ -117,6 +127,12 @@ export class MapasComponent implements OnInit, OnDestroy {
     verEmergencia(id) {
         this._ngZone.run(() => {
             this.router.navigate(['/emergencia/' + id]);
+        });
+    }
+
+    verRutaCritica(id) {
+        this._ngZone.run(() => {
+            this.router.navigate(['/ruta-critica/' + id]);
         });
     }
 

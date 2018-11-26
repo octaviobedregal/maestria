@@ -1,156 +1,41 @@
-$(document).ready(function() {
-    "use strict";
-    /* 
-    ------------------------------------------------
-    Sidebar open close animated humberger icon
-    ------------------------------------------------*/
 
-    $(".hamburger").on('click', function () {
-        $(this).toggleClass("is-active");
+"use strict"; // Start of use strict
+$(document).ready(function () {
+
+    // Toggle the side navigation
+    $("#sidebarToggle").on('click', function (e) {
+        e.preventDefault();
+        $("body").toggleClass("sidebar-toggled");
+        $(".sidebar").toggleClass("toggled");
     });
 
-
-    /*  
-    -------------------
-    List item active
-    -------------------*/
-    $('.header li, .sidebar li').on('click', function () {
-        $(".header li.active, .sidebar li.active").removeClass("active");
-        $(this).addClass('active');
-    });
-
-    $(".header li").on("click", function (event) {
-        event.stopPropagation();
-    });
-
-    $(document).on("click", function () {
-        $(".header li").removeClass("active");
-
-    });
-
-
-
-    /*  
-    -----------------
-    Chat Sidebar
-    ---------------------*/
-
-
-    var open = false;
-
-    var openSidebar = function () {
-        $('.chat-sidebar').addClass('is-active');
-        $('.chat-sidebar-icon').addClass('is-active');
-        open = true;
-    }
-    var closeSidebar = function () {
-        $('.chat-sidebar').removeClass('is-active');
-        $('.chat-sidebar-icon').removeClass('is-active');
-        open = false;
-    }
-
-    $('.chat-sidebar-icon').on('click', function (event) {
-        event.stopPropagation();
-        var toggle = open ? closeSidebar : openSidebar;
-        toggle();
-    });
-
-
-
-
-
-
-
-
-    /*  Auto date in footer and refresh
-    --------------------------------------*/
-
-    //document.getElementById("date-time").innerHTML = Date();
-
-    $('.page-refresh').on("click", function () {
-        location.reload();
-    });
-
-
-    /* TO DO LIST 
-    --------------------*/
-    $(".tdl-new").on('keypress', function (e) {
-        var code = (e.keyCode ? e.keyCode : e.which);
-        if (code == 13) {
-            var v = $(this).val();
-            var s = v.replace(/ +?/g, '');
-            if (s == "") {
-                return false;
-            } else {
-                $(".tdl-content ul").append("<li><label><input type='checkbox'><i></i><span>" + v + "</span><a href='#' class='ti-close'></a></label></li>");
-                $(this).val("");
-            }
+    // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
+    $('body.fixed-nav .sidebar').on('mousewheel DOMMouseScroll wheel', function (e) {
+        if ($(window).width() > 768) {
+            var e0 = e.originalEvent,
+                delta = e0.wheelDelta || -e0.detail;
+            this.scrollTop += (delta < 0 ? 1 : -1) * 30;
+            e.preventDefault();
         }
     });
 
-
-    $(".tdl-content a").on("click", function () {
-        var _li = $(this).parent().parent("li");
-        _li.addClass("remove").stop().delay(100).slideUp("fast", function () {
-            _li.remove();
-        });
-        return false;
-    });
-
-    // for dynamically created a tags
-    $(".tdl-content").on('click', "a", function () {
-        var _li = $(this).parent().parent("li");
-        _li.addClass("remove").stop().delay(100).slideUp("fast", function () {
-            _li.remove();
-        });
-        return false;
-    });
-
-
-
-    /*  Chat Sidebar User custom Search
-    ---------------------------------------*/
-
-    $('[data-search]').on('keyup', function () {
-        var searchVal = $(this).val();
-        var filterItems = $('[data-filter-item]');
-
-        if (searchVal != '') {
-            filterItems.addClass('hidden');
-            $('[data-filter-item][data-filter-name*="' + searchVal.toLowerCase() + '"]').removeClass('hidden');
+    // Scroll to top button appear
+    $(document).on('scroll', function () {
+        var scrollDistance = $(this).scrollTop();
+        if (scrollDistance > 100) {
+            $('.scroll-to-top').fadeIn();
         } else {
-            filterItems.removeClass('hidden');
+            $('.scroll-to-top').fadeOut();
         }
     });
 
+    // Smooth scrolling using jQuery easing
+    $(document).on('click', 'a.scroll-to-top', function (event) {
+        var $anchor = $(this);
+        $('html, body').stop().animate({
+            scrollTop: ($($anchor.attr('href')).offset().top)
+        }, 1000, 'easeInOutExpo');
+        event.preventDefault();
+    });
 
-    /*  Vertical Carousel
-    ---------------------------*/
-
-    $('#verticalCarousel').carousel({
-        interval: 2000
-    })
-
-    $(window).bind("resize", function () {
-        if ($(this).width() < 680) {
-            $('.logo').addClass('hidden')
-            $('.sidebar').removeClass('sidebar-shrink')
-            $('.sidebar').removeClass('sidebar-shrink, sidebar-gestures')
-        }
-    }).trigger('resize');
-
-
-
-
-
-    /*  pace Loader
-    -------------*/
-/*
-    paceOptions = {
-        elements: true
-    };*/
-
-
-
-
-})
+}); // End of use strict

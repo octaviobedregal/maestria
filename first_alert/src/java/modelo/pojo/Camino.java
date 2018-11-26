@@ -23,8 +23,11 @@ public class Camino implements java.io.Serializable {
     private Long idMapa;
     private Long idNodoFin;
     private Long idNodoInicio;
+    private int numero;
     private int numeroNodoFin;
     private int numeroNodoInicio;
+    private String codigoNodoFin;
+    private String codigoNodoInicio;
     private int peso;
 
     @Id
@@ -65,6 +68,15 @@ public class Camino implements java.io.Serializable {
         this.idNodoInicio = idNodoInicio;
     }
 
+    @Column(name = "numero", nullable = false)
+    public int getNumero() {
+        return this.numero;
+    }
+
+    public void setNumero(int numero) {
+        this.numero = numero;
+    }
+
     @Formula(value = "(SELECT NOD.numero FROM nodo NOD WHERE NOD.id = id_nodo_fin)")
     @Basic(fetch = FetchType.EAGER)
     public int getNumeroNodoFin() {
@@ -83,6 +95,26 @@ public class Camino implements java.io.Serializable {
 
     public void setNumeroNodoInicio(int numeroNodoInicio) {
         this.numeroNodoInicio = numeroNodoInicio;
+    }
+
+    @Formula(value = "(SELECT NOD.codigo FROM nodo NOD WHERE NOD.id = id_nodo_inicio)")
+    @Basic(fetch = FetchType.EAGER)
+    public String getCodigoNodoInicio() {
+        return codigoNodoInicio;
+    }
+
+    public void setCodigoNodoInicio(String codigoNodoInicio) {
+        this.codigoNodoInicio = codigoNodoInicio;
+    }
+
+    @Formula(value = "(SELECT NOD.codigo FROM nodo NOD WHERE NOD.id = id_nodo_fin)")
+    @Basic(fetch = FetchType.EAGER)
+    public String getCodigoNodoFin() {
+        return codigoNodoFin;
+    }
+
+    public void setCodigoNodoFin(String codigoNodoFin) {
+        this.codigoNodoFin = codigoNodoFin;
     }
 
     @Column(name = "peso", nullable = false)

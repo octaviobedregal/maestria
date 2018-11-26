@@ -30,12 +30,9 @@ export class EmergenciaComponent implements OnInit {
     emergencias: any[] = [];
     backgroundImg: SafeStyle;
 
-    constructor(private router: Router,
-        private route: ActivatedRoute,
-        private _ngZone: NgZone,
+    constructor(private route: ActivatedRoute,
         private mapaService: MapaService,
-        private emergenciaService: EmergenciaService,
-        private sanitizer: DomSanitizer) {
+        private emergenciaService: EmergenciaService) {
         this.route.params.subscribe(parametros => {
             this.id = parametros['id'];
             this.mapaService.buscar(this.id).subscribe((data) => {
@@ -46,10 +43,10 @@ export class EmergenciaComponent implements OnInit {
                     this.contruirMapa();
                     this.contruirEmergencias();
                 }, error => {
-                    console.log(error);
+                    console.error(error);
                 })
             }, error => {
-                console.log(error);
+                console.error(error);
             })
         });
     }
@@ -60,7 +57,6 @@ export class EmergenciaComponent implements OnInit {
         for (let nodo of this.mapa.nodos) {
             for (let emergencia of this.emergencias) {
                 if (nodo.id === emergencia.idNodo) {
-                    console.log(nodo);
                     $(this).addClass('selected');
                     break;
                 }
@@ -131,36 +127,13 @@ export class EmergenciaComponent implements OnInit {
 
         this.network = new vis.Network(container, data);
         this.network.setOptions(options);
-
-        this.network.on('click', function (properties) {
-            console.log(properties);
-            //var ids = properties.nodes;
-            //var clickedNodes = this.nodes.get(ids);
-            //console.log('clicked nodes:', clickedNodes);
-        });
     }
 
     cambiarColores() {
         this.nodes.update([{ id: 1, color: 'red' }]);
-        /*
-                 this.nodes.add([
-               { id: 1, label: 'x=200, y=200', x: 200, y: 200 },
-               { id: 2, label: 'node 2', x: 0, y: 0 },
-               { id: 3, label: 'node 3', x: 0, y: 400 },
-               { id: 4, label: 'node 4', x: 400, y: 400 },
-               { id: 5, label: 'node 5', x: 400, y: 0 }
-             ]);
-             this.edges.add([
-               { from: 1, to: 2, label: 'to x=0, y=0', font: { color: 'blue' } },
-               { from: 1, to: 3, label: 'to x=0, y=400', font: { color: 'blue' } },
-               { from: 1, to: 4, label: 'to x=400, y=400', font: { color: 'blue' } },
-               { from: 1, to: 5, label: 'to x=400, y=0', font: { color: 'blue' } }
-             ]);*/
     }
 
     @ViewChild('canvas') public canvasEl: ElementRef;
-
-
 
     contruirDataTableNodos() {
         let optNodos: any = {

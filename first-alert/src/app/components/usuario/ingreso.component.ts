@@ -10,6 +10,8 @@ import { AutenticacionService } from '../../services/autenticacion.services';
 
 export class IngresoComponent implements OnInit, OnDestroy {
     usuario: any = { nombre: '', clave: '' };
+    showMensajeError: boolean = false;
+    mensaje: String = '';
 
     constructor(private mapaService: MapaService,
         private router: Router,
@@ -25,9 +27,20 @@ export class IngresoComponent implements OnInit, OnDestroy {
     }
 
     ingresarSistema() {
-        this.autenticacionService.iniciarSesion(this.usuario);
-        this._ngZone.run(() => {
-            this.router.navigate(['/inicio']);
+        this.showMensajeError = false;
+        this.autenticacionService.logearUsuario(this.usuario.nombre, this.usuario.clave).subscribe((data) => {
+            let sesion = data.json();
+            if (sesion != null && sesion.usuario.id > 0) {
+                this.autenticacionService.iniciarSesion(sesion);
+                this._ngZone.run(() => {
+                    this.router.navigate(['/inicio']);
+                });
+            } else {
+                this.showMensajeError = true;
+                this.mensaje = "Usuario / Clave Incorrecto";
+            }
+        }, error => {
+            console.log(error);
         });
     }
 }

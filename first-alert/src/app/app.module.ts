@@ -24,6 +24,8 @@ import { Guardian } from './services/guardian.services';
 import { IngresoComponent } from './components/usuario/ingreso.component';
 import { EmergenciaComponent } from './components/mapa/emergencia.component';
 import { EmergenciaService } from './services/emergencia.service';
+import { RutaCriticaComponent } from './components/mapa/ruta-critica.component';
+import { RutaCriticaService } from './services/ruta-critica.service';
 
 
 
@@ -34,7 +36,8 @@ import { EmergenciaService } from './services/emergencia.service';
     InicioComponent,
     MapasComponent,
     MapaComponent,
-    EmergenciaComponent
+    EmergenciaComponent,
+    RutaCriticaComponent
   ],
   imports: [
     BrowserModule,
@@ -52,6 +55,7 @@ import { EmergenciaService } from './services/emergencia.service';
     MapaService,
     EmergenciaService,
     AutenticacionService,
+    RutaCriticaService,
     Guardian
   ],
   bootstrap: [AppComponent],

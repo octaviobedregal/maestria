@@ -5,13 +5,16 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import modelo.dao.IMapaDao;
-import modelo.dao.impl.Node;
-import modelo.dao.impl.RutaMinimaDao;
+import modelo.dao.impl.MapaDao;
+import modelo.dao.impl.NodoA;
+import modelo.dao.impl.PathClass;
 import modelo.pojo.Mapa;
+import modelo.pojo.Nodo;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -139,25 +142,20 @@ public class MapaController {
         }
     }
 
-    @RequestMapping(value = "/mapa/calcular-ruta-minima/{posX}/{posY}", method = RequestMethod.GET, produces = "application/json")
-    public void calcularRutaMinima(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @PathVariable("posX") int posX, @PathVariable("posY") int posY) throws IOException {
+    @RequestMapping(value = "/mapa/buscar-ruta-critica/{codigo}", method = RequestMethod.GET, produces = "application/json")
+    public void buscarRutaCritica(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, @PathVariable("codigo") String codigo) throws IOException {
         PrintWriter out = httpServletResponse.getWriter();
         try {
-            //List<Mapa> lista = mapaDao.autocompletar(criterio);
-            RutaMinimaDao dao = new RutaMinimaDao();
-            List<Node> lista = dao.calcularRutaMinima(posX, posY);
-            String jsonSalida = jsonTransformer.toJson(lista);
+            List<NodoA> result = mapaDao.buscarRutaCritica(codigo);
             httpServletResponse.setStatus(HttpServletResponse.SC_OK);
             httpServletResponse.setContentType("application/json; charset=UTF-8");
-            out.println(jsonSalida);
-
+            out.println(jsonTransformer.toJson(result));
         } catch (Exception ex) {
             ex.printStackTrace();
             httpServletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             httpServletResponse.setContentType("application/json; charset=UTF-8");
             out.println("{\"RSP\":\"ERROR\",\"MSG\":\"" + ex.getMessage() + "\"}");
         }
-
     }
 
 }

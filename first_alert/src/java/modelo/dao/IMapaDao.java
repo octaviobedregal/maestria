@@ -6,6 +6,7 @@
 package modelo.dao;
 
 import java.util.List;
+import modelo.dao.impl.NodoA;
 import modelo.pojo.Mapa;
 
 /**
@@ -25,4 +26,6 @@ public interface IMapaDao {
     public List<Mapa> listar();
 
     public List<Mapa> autocompletar(String criterio);
+
+    public List<NodoA> buscarRutaCritica(String codigoNodo);
 }

@@ -22,7 +22,7 @@
         </button>
     </div>
     <div class="col-md-6">
-        <div id="network" [style.background-image]="backgroundImg" ></div>
+        <div id="network" [style.background-image]="backgroundImg"></div>
     </div>
     <div class="col-md-6">
         <h3>Nodos:</h3>
@@ -37,7 +37,8 @@
                     <h4>Nombre:</h4>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel" required>
+                    <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel"
+                        required>
                     <div class="text-danger" [hidden]="!nombre.invalid">
                         Campo Obligatorio
                     </div>
@@ -46,9 +47,10 @@
                     <h4>Descripción:</h4>
                 </div>
                 <div class="col-md-4">
-                    <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel" required></textarea>
+                    <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel"
+                        required></textarea>
                     <div class="text-danger" [hidden]="!descripcion.invalid">
-                            Campo Obligatorio
+                        Campo Obligatorio
                     </div>
                 </div>
             </div>
@@ -60,3 +62,38 @@
         </button>
     </div>
 </div>
+<ng-template #tplNodo>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Editar BL</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="container">
+            <form #formNodo="ngForm" class="row">
+                <label class="col-md-12">Código</label>
+                <div class="col-md-12">
+                    <input type="text" class="form-control" required [(ngModel)]="codigoTmp" name="codigo" #codigo="ngModel">
+
+
+                    <div [hidden]="codigo.valid" class="text-danger h-25" rol="alert">
+                        Campo obligatorio
+                    </div>
+                </div>
+                <label class="col-md-12">¿Objetivo?</label>
+                <div class="col-md-12">
+                    <input type="checkbox" class="form-control" [(ngModel)]="objetivoTmp" name="objetivo" #objetivo="ngModel">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="guardarNodo()" [disabled]="!formNodo.form.valid">
+            <i class="fa fa-save">&nbsp;</i>Guardar
+        </button>
+        <button type="button" class="btn btn-danger" (click)="modalRef.hide()">
+            <i class="fa fa-ban">&nbsp;</i>Cancelar
+        </button>
+    </div>
+</ng-template>

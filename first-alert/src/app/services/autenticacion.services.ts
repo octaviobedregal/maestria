@@ -3,29 +3,38 @@ import { Http, Headers } from "@angular/http";
 
 @Injectable()
 export class AutenticacionService {
-    API_ENDPOINT: string = 'http://localhost:8090/first_alert/controlador/mapa';
+    API_ENDPOINT: string = 'http://localhost:8090/first_alert/controlador/sesion';
+    //API_ENDPOINT: string = 'http://50.63.12.52:8080/first_alert/controlador/sesion';
 
     constructor(private http: Http) {
 
     }
 
-    logearUsuario(){
-        
+    logearUsuario(nombre, clave) {
+        return this.http.get(this.API_ENDPOINT + '/ingresar-sistema/' + nombre + "/" + clave);
     }
 
-    iniciarSesion(usuario) {
-        sessionStorage.setItem('sessionUsuario', usuario);
+    iniciarSesion(sesion) {
+        sessionStorage.setItem('session', JSON.stringify(sesion));
     }
 
     cerrarSesion() {
-        sessionStorage.removeItem('sessionUsuario');
+        sessionStorage.removeItem('session');
     }
 
     estaLogeado() {
         let logeado: boolean = false;
-        if (sessionStorage.getItem('sessionUsuario')) {
+        if (sessionStorage.getItem('session')) {
             logeado = true;
         }
         return logeado;
+    }
+
+    traerNombreUsuarioSesion() {
+        let nombreUsuario: String = "";
+        if (sessionStorage.getItem('session')) {
+            nombreUsuario = sessionStorage.session.usuario.nombre;
+        }
+        return nombreUsuario;
     }
 }

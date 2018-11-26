@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MapaService } from '../../services/mapa.service';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
 import Swal from 'sweetalert2'
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
 
 declare var vis: any;
 const toast = Swal.mixin({
@@ -12,6 +13,7 @@ const toast = Swal.mixin({
   showConfirmButton: false,
   timer: 3000
 });
+
 
 
 @Component({
@@ -25,7 +27,13 @@ export class MapaComponent implements OnInit {
   contNodo: number = 1;
   contCamino: number = 1;
   backgroundImg: SafeStyle;
+  modalRef: BsModalRef;
+  codigoTmp: any = "";
+  numeroTmp: any = 0;
+  objetivoTmp: any = false;
+  Math: any;
 
+  @ViewChild('tplNodo') private tplNodo;
 
   controlDtNodos: any;
   @ViewChild('dtNodos') dtNodos: ElementRef;
@@ -44,14 +52,32 @@ export class MapaComponent implements OnInit {
     private route: ActivatedRoute,
     private _ngZone: NgZone,
     private mapaService: MapaService,
-    private sanitizer: DomSanitizer) {
+    private sanitizer: DomSanitizer,
+    private modalService: BsModalService) {
+    this.Math = Math;
     this.route.params.subscribe(parametros => {
       this.id = parametros['id'];
       if (this.id !== '0') {
         this.mapaService.buscar(this.id).subscribe((data) => {
-          console.log(data.json());
+          this.mapa = data.json();
+          console.log(this.mapa);
+          this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.id) + ')';
+
+          for (let nodo of this.mapa.nodos) {
+            let nodoTmp = { id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y };
+            this.nodes.add(nodoTmp);
+            this.controlDtNodos.row.add(nodo).draw();
+          }
+          for (let camino of this.mapa.caminos) {
+            let caminoTmp = { from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } };
+            this.edges.add(caminoTmp);
+            this.controlDtCaminos.row.add(camino).draw();
+          }
+
+          this.contruirMapa();
+
         }, error => {
-          console.log(error);
+          console.error(error);
         })
       }
     });
@@ -82,22 +108,42 @@ export class MapaComponent implements OnInit {
           width: '5%',
           targets: 0
         }, {
-          title: 'Nodo',
-          data: 'label',
-          width: '35%'
+          title: 'BL',
+          data: 'codigo',
+          width: 'auto'
         }, {
           title: 'X',
           data: 'x',
-          width: '35%'
+          visible: false
         }, {
           title: 'Y',
           data: 'y',
-          width: '35%'
+          visible: false
+        }, {
+          title: "Objectivo",
+          render: function (data, type, row, meta) {
+            var txt = (row.objetivo ? "Si" : "No")
+            return txt;
+          },
+          width: '5%'
+        }, {
+          title: "",
+          render: function (data, type, row, meta) {
+            var btn = '<div style="text-align:center;"><button type="button" class="btn btn-primary btn-sm"'
+            btn += 'onclick="functions.editarNodo(' + row.numero;
+            btn += ",'" + row.codigo + "'";
+            btn += "," + row.objetivo
+            btn += ')">';
+            btn += '<i class="fa fa-edit"></i>'
+            btn += '</button></div>';
+            return btn;
+          },
+          width: '5%'
         }, {
           title: "",
           render: function (data, type, row, meta) {
             var btn = '<div style="text-align:center;"><button type="button" class="btn btn-danger btn-sm"'
-            btn += 'onclick="functions.eliminarNodo(' + row.id + ')">'
+            btn += 'onclick="functions.eliminarNodo(' + row.numero + ')">'
             btn += '<i class="fa fa-trash-o"></i>'
             btn += '</button></div>';
             return btn;
@@ -109,8 +155,7 @@ export class MapaComponent implements OnInit {
       bSearchable: false,
       bInfo: false,
       select: {
-        style: 'multi',
-        selector: 'td:first-child'
+        style: 'multi'
       },
       bSort: false,
       responsive: true,
@@ -120,24 +165,21 @@ export class MapaComponent implements OnInit {
       buttons: []
     };
 
-
     window.functions = window.functions || {};
 
-
-
-
+    window.functions.editarNodo = this.editarNodo.bind(this);
     window.functions.eliminarNodo = this.eliminarNodo.bind(this);
     //window.functions.editar = this.ver.bind(this);
     //window.functions.eliminar = this.eliminar.bind(this);
 
     this.controlDtNodos = $(this.dtNodos.nativeElement).DataTable(optNodos);
   }
-  eliminarNodo(id) {
-    this.nodes.remove({ id: id });
+  eliminarNodo(numero) {
+    this.nodes.remove({ id: numero });
     let nodos = this.controlDtNodos.rows().data();
     let cont = 0;
     for (let nodoTmp of nodos) {
-      if (nodoTmp.id === id) {
+      if (nodoTmp.numero === numero) {
         this.controlDtNodos.row(cont).remove().draw();
         break;
       }
@@ -145,18 +187,39 @@ export class MapaComponent implements OnInit {
     }
   }
 
-  editarCamino(id, peso) {
+  editarNodo(numero, codigo, objetivo) {
+    this.modalRef = this.modalService.show(this.tplNodo, { class: 'modal-sm' });
+    this.numeroTmp = numero;
+    this.codigoTmp = codigo;
+    this.objetivoTmp = objetivo;
+  }
+
+  guardarNodo() {
+    let nodos = this.controlDtNodos.rows().data();
+    let cont = 0;
+    for (let nodoTmp of nodos) {
+      if (nodoTmp.numero === this.numeroTmp) {
+        nodoTmp.codigo = this.codigoTmp;
+        nodoTmp.objetivo = this.objetivoTmp;
+        this.controlDtNodos.row(cont).data(nodoTmp).draw();
+        break;
+      }
+      cont++;
+    }
+    this.modalRef.hide();
+  }
+
+  guardarCamino() {
+    /*
     let caminos = this.controlDtCaminos.rows().data();
-    console.log(caminos);
     let cont = 0;
     for (let camino of caminos) {
-      if (camino.id === id) {
-        camino.id = this.contCamino;
-        camino.peso = peso;
+      if (camino.numero === this.numeroTmp) {
+        camino.peso = this.pesoTmp;
         this.edges.update({
-          id: this.contCamino,
-          idfrom: camino.nodoFin,
-          to: camino.nodoInicio,
+          id: camino.numero,
+          idfrom: camino.numeroNodoInicio,
+          to: camino.numeroNodoFin,
           label: camino.peso.toString()
         });
         this.controlDtCaminos.row(cont).data(camino).draw();
@@ -164,14 +227,15 @@ export class MapaComponent implements OnInit {
       }
       cont++;
     }
+    this.modalRef.hide();*/
   }
 
-  eliminarCamino(idCamino) {
-    this.edges.remove({ id: idCamino });
+  eliminarCamino(numero) {
+    this.edges.remove({ id: numero });
     let caminos = this.controlDtCaminos.rows().data();
     let cont = 0;
     for (let camino of caminos) {
-      if (camino.id === idCamino) {
+      if (camino.numero === numero) {
         this.controlDtCaminos.row(cont).remove().draw();
         break;
       }
@@ -182,12 +246,12 @@ export class MapaComponent implements OnInit {
   contruirDataTableCaminos() {
     let optCaminos: any = {
       columns: [{
-        title: 'Nodo Inicio',
-        data: 'labelInicio',
+        title: 'BL Inicio',
+        data: 'codigoNodoInicio',
         width: '35%'
       }, {
-        title: 'Nodo Fin',
-        data: 'labelFin',
+        title: 'BL Fin',
+        data: 'codigoNodoFin',
         width: '35%'
       }, {
         title: 'Peso',
@@ -196,18 +260,8 @@ export class MapaComponent implements OnInit {
       }, {
         title: "",
         render: function (data, type, row, meta) {
-          var btn = '<div style="text-align:center;"><button type="button" class="btn btn-primary btn-sm"'
-          btn += 'onclick="functions.editarCamino(' + row.id + ',' + 5 + ')">'
-          btn += '<i class="fa fa-edit"></i>'
-          btn += '</button></div>';
-          return btn;
-        },
-        width: '5%'
-      }, {
-        title: "",
-        render: function (data, type, row, meta) {
           var btn = '<div style="text-align:center;"><button type="button" class="btn btn-danger btn-sm"'
-          btn += 'onclick="functions.eliminarCamino(' + row.id + ')">'
+          btn += 'onclick="functions.eliminarCamino(' + row.numero + ')">'
           btn += '<i class="fa fa-trash-o"></i>'
           btn += '</button></div>';
           return btn;
@@ -227,10 +281,8 @@ export class MapaComponent implements OnInit {
       buttons: []
     };
 
-
     window.functions = window.functions || {};
 
-    window.functions.editarCamino = this.editarCamino.bind(this);
     window.functions.eliminarCamino = this.eliminarCamino.bind(this);
 
     this.controlDtCaminos = $(this.dtCaminos.nativeElement).DataTable(optCaminos);
@@ -308,11 +360,20 @@ export class MapaComponent implements OnInit {
     window.functions.cambiarPosicionNodo = this.cambiarPosicionNodo.bind(this);
   }
 
-  cambiarPosicionNodo(puntos, node) {
+  buscarNodoPorNumero(numero) {
+    let nodos = this.controlDtNodos.rows().data();
+    for (let nodo of nodos) {
+      if (nodo.numero === numero) {
+        return nodo;
+      }
+    }
+  }
+
+  cambiarPosicionNodo(puntos, numero) {
     let nodos = this.controlDtNodos.rows().data();
     let cont = 0;
     for (let nodoTmp of nodos) {
-      if (nodoTmp.id === node) {
+      if (nodoTmp.numero === numero) {
         nodoTmp.x = puntos.x;
         nodoTmp.y = puntos.y;
         this.controlDtNodos.row(cont).data(nodoTmp).draw();
@@ -320,13 +381,32 @@ export class MapaComponent implements OnInit {
       }
       cont++;
     }
+
+    let caminos = this.controlDtCaminos.rows().data();
+    cont = 0;
+    for (let camino of caminos) {
+      if (camino.numeroNodoInicio === numero || camino.numeroNodoFin === numero) {
+        let nodoInicio: any = this.buscarNodoPorNumero(camino.numeroNodoInicio);
+        let nodoFin: any = this.buscarNodoPorNumero(camino.numeroNodoFin);
+        camino.peso = (this.Math.abs(nodoInicio.x - nodoFin.x) + this.Math.abs(nodoInicio.y - nodoFin.y)) * 2;
+        this.edges.update({
+          id: camino.numero,
+          idfrom: camino.numeroNodoInicio,
+          to: camino.numeroNodoFin,
+          label: camino.peso.toString()
+        });
+        this.controlDtCaminos.row(cont).data(camino).draw();
+      }
+      cont++;
+    }
   }
 
   agregarNodo() {
     try {
-      let label = 'BL' + this.contNodo.toString();
-      let nodo = { id: this.contNodo, label: label, x: 0, y: 0 };
-      this.nodes.add(nodo);
+      let codigo = 'BL' + this.contNodo.toString();
+      let nodo = { id: 0, numero: this.contNodo, codigo: codigo, x: 0, y: 0, objetivo: false };
+      let nodoVis = { id: nodo.numero, label: nodo.codigo, x: 0, y: 0 };
+      this.nodes.add(nodoVis);
       this.controlDtNodos.row.add(nodo).draw();
       this.contNodo++;
     }
@@ -338,25 +418,31 @@ export class MapaComponent implements OnInit {
   unirNodos() {
     let seleccionados = this.controlDtNodos.rows({ selected: true }).data();
     let cont = 0;
-    let camino = { id: 0, nodoInicio: 0, labelInicio: '', nodoFin: 0, labelFin: '', peso: 0 };
-    //console.log(seleccionados);
+    let camino = { id: 0, numero: this.contCamino, numeroNodoInicio: 0, codigoNodoInicio: '', numeroNodoFin: 0, codigoNodoFin: '', peso: 0 };
+
+    let nodoInicio: any;
+    let nodoFin: any;
+
     for (let seleccionado of seleccionados) {
       if (cont === 0) {
-        camino.nodoInicio = seleccionado.id;
-        camino.labelInicio = seleccionado.label;
+        nodoInicio = seleccionado;
         cont++;
       } else {
-        camino.nodoFin = seleccionado.id;
-        camino.labelFin = seleccionado.label;
+        nodoFin = seleccionado;
       }
     }
+
+    camino.numeroNodoInicio = nodoInicio.numero;
+    camino.codigoNodoInicio = nodoInicio.codigo;
+
+    camino.numeroNodoFin = nodoFin.numero;
+    camino.codigoNodoFin = nodoFin.codigo;
+
+    camino.peso = (this.Math.abs(nodoInicio.x - nodoFin.x) + this.Math.abs(nodoInicio.y - nodoFin.y)) * 2;
+
+    let caminoVis = { id: camino.numero, from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString() };
     this.controlDtCaminos.row.add(camino).draw();
-    this.edges.add({
-      id: this.contCamino,
-      from: camino.nodoFin,
-      to: camino.nodoInicio,
-      label: camino.peso.toString()
-    });
+    this.edges.add(caminoVis);
     this.contCamino++;
   }
 
@@ -390,24 +476,17 @@ export class MapaComponent implements OnInit {
         let caminosServer: any = [];
 
         for (let nodoTmp of nodos) {
-          let nodoServerTmp: any = {};
-          nodoServerTmp.numero = nodoTmp.id;
-          nodoServerTmp.codigo = nodoTmp.label;
-          nodoServerTmp.x = nodoTmp.x;
-          nodoServerTmp.y = nodoTmp.y;
-          nodosServer.push(nodoServerTmp);
+          nodosServer.push(nodoTmp);
         }
 
         for (let caminoTmp of caminos) {
-          let caminoServerTmp: any = {};
-          caminoServerTmp.idNodoFin = caminoTmp.nodoFin;
-          caminoServerTmp.idNodoInicio = caminoTmp.nodoInicio;
-          caminoServerTmp.peso = caminoTmp.peso;
-          caminosServer.push(caminoServerTmp);
+          caminosServer.push(caminoTmp);
         }
 
         this.mapa.nodos = nodosServer;
         this.mapa.caminos = caminosServer;
+
+        console.log(this.mapa);
 
         this.mapaService.insertar(this.mapa).subscribe((data) => {
           toast({
@@ -419,7 +498,7 @@ export class MapaComponent implements OnInit {
             type: 'error',
             title: 'Ocurrió un error en el servidor, inténtelo mas tarde'
           })
-        })
+        });
       }
     }
     );
