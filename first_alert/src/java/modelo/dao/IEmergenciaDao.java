@@ -14,8 +14,8 @@ import modelo.pojo.Emergencia;
  */
 public interface IEmergenciaDao {
 
-    public List<Emergencia> listar(Long idMapa);
+    public List<Emergencia> listarEmergencias(Long idMapa);
 
-    public void crear(List<Emergencia> emergenciass);
+    public boolean guardarEmergencia(Long idMapa, List<Emergencia> emergenciass);
 
 }

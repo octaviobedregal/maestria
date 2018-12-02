@@ -19,22 +19,28 @@ import org.hibernate.Session;
 public class EmergenciaDao implements IEmergenciaDao {
 
     @Override
-    public void crear(List<Emergencia> emergencias) {
+    public boolean guardarEmergencia(Long idMapa, List<Emergencia> emergencias) {
+        boolean guardado = false;
         try {
             Session sesion = HibernateUtil.getSessionFactory().openSession();
             sesion.beginTransaction();
+            String hqlEmergencia = "DELETE FROM Emergencia WHERE idMapa= :idMapa";
+            sesion.createQuery(hqlEmergencia).setLong("idMapa", idMapa).executeUpdate();
+
             for (Emergencia emergencia : emergencias) {
                 sesion.save(emergencia);
             }
             sesion.getTransaction().commit();
             sesion.close();
+            guardado = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return guardado;
     }
 
     @Override
-    public List<Emergencia> listar(Long idMapa) {
+    public List<Emergencia> listarEmergencias(Long idMapa) {
         List<Emergencia> lista = null;
         try {
             Session sesion = HibernateUtil.getSessionFactory().openSession();

@@ -37,7 +37,7 @@ export class EmergenciaComponent implements OnInit {
             this.id = parametros['id'];
             this.mapaService.buscar(this.id).subscribe((data) => {
                 this.mapa = data.json();
-                this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.id) + ')';
+                this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.path) + ')';
                 this.emergenciaService.listar(this.id).subscribe((data) => {
                     this.emergencias = data.json();
                     this.contruirMapa();
@@ -53,15 +53,26 @@ export class EmergenciaComponent implements OnInit {
 
     contruirEmergencias() {
         this.controlDtNodos.rows.add(this.mapa.nodos).draw();
+        let nodos = this.controlDtNodos.rows().data();
         let cont = 0;
-        for (let nodo of this.mapa.nodos) {
-            for (let emergencia of this.emergencias) {
+        for (let emergencia of this.emergencias) {
+            cont = 0;
+            for (let nodo of nodos) {
+                console.log(nodo);
                 if (nodo.id === emergencia.idNodo) {
-                    $(this).addClass('selected');
-                    break;
+                    this.controlDtNodos.row(':eq(' + cont + ')').select();
                 }
+                cont++;
             }
             cont++;
+        }
+
+        for (let emergencia of this.emergencias) {
+            for (let nodo of this.mapa.nodos) {
+                if (nodo.id === emergencia.idNodo) {
+                    this.nodes.update([{ id: nodo.numero, color: 'red' }]);
+                }
+            }
         }
     }
     ngOnInit() {
@@ -71,7 +82,7 @@ export class EmergenciaComponent implements OnInit {
     contruirMapa() {
 
         for (let nodo of this.mapa.nodos) {
-            this.nodes.add({ id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y });
+            this.nodes.add({ id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y ,color: '#D2E5FF'});
         }
         for (let camino of this.mapa.caminos) {
             this.edges.add({ from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } });
@@ -154,8 +165,7 @@ export class EmergenciaComponent implements OnInit {
             bSearchable: false,
             bInfo: false,
             select: {
-                style: 'multi',
-                selector: 'td:first-child'
+                style: 'multi'
             },
             bSort: false,
             responsive: true,
@@ -191,7 +201,7 @@ export class EmergenciaComponent implements OnInit {
         if (emergencia) {
             this.nodes.update([{ id: numero, color: 'red' }]);
         } else {
-            this.nodes.update([{ id: numero, color: 'blue' }]);
+            this.nodes.update([{ id: numero, color: '#D2E5FF' }]);
         }
     }
 
@@ -217,7 +227,7 @@ export class EmergenciaComponent implements OnInit {
                     emergencia.fecha = new Date();
                     emergencias.push(emergencia);
                 }
-                this.emergenciaService.guardar(emergencias).subscribe((data) => {
+                this.emergenciaService.guardar(this.id, emergencias).subscribe((data) => {
                     toast({
                         type: 'success',
                         title: 'Emergencia guardada con éxito'

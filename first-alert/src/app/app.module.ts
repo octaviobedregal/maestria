@@ -26,12 +26,14 @@ import { EmergenciaComponent } from './components/mapa/emergencia.component';
 import { EmergenciaService } from './services/emergencia.service';
 import { RutaCriticaComponent } from './components/mapa/ruta-critica.component';
 import { RutaCriticaService } from './services/ruta-critica.service';
+import { RutaCriticaApiComponent } from './components/mapa/ruta-critica-api.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    RutaCriticaApiComponent,
     IngresoComponent,
     InicioComponent,
     MapasComponent,

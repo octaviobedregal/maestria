@@ -11,12 +11,12 @@ export class EmergenciaService {
     }
 
     public listar(idMapa) {
-        return this.http.get(this.API_ENDPOINT + '/listar/' + idMapa);
+        return this.http.get(this.API_ENDPOINT + '/listar-emergencias/' + idMapa);
     }
 
-    public guardar(emergencias) {
+    public guardar(idMapa, emergencias) {
         let body = emergencias;
-        return this.http.post(this.API_ENDPOINT + '/crear-emergencia', body);
+        return this.http.post(this.API_ENDPOINT + '/guardar-emergencia/' + idMapa, body);
     }
 
 }

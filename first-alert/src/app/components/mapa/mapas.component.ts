@@ -3,6 +3,15 @@ import { MapaService } from '../../services/mapa.service';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2'
 
+const toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    type: 'warning',
+    showConfirmButton: false,
+    timer: 3000
+});
+
+
 @Component({
     selector: 'app-mapas',
     templateUrl: './mapas.component.html'
@@ -115,7 +124,20 @@ export class MapasComponent implements OnInit, OnDestroy {
     }
 
     eliminar(id) {
-
+        this.mapaService.eliminar(id).subscribe((data) => {
+            if (data.json()) {
+                this.controlDtMapas.ajax.reload();
+            }
+            toast({
+                type: 'success',
+                title: 'Mapa eliminado con éxito'
+            })
+        }, error => {
+            toast({
+                type: 'error',
+                title: 'Ocurrió un error en el servidor, inténtelo mas tarde'
+            })
+        });
     }
 
     ver(id) {

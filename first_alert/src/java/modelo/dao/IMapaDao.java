@@ -6,7 +6,6 @@
 package modelo.dao;
 
 import java.util.List;
-import modelo.dao.impl.NodoA;
 import modelo.pojo.Mapa;
 
 /**
@@ -15,17 +14,15 @@ import modelo.pojo.Mapa;
  */
 public interface IMapaDao {
 
-    public void crear(Mapa producto);
+    public void guardarMapa(Mapa mapa);
 
-    public void editar(Mapa producto);
+    public Mapa buscarMapaPorId(long idMapa);
 
-    public Mapa buscar(long id);
+    public Mapa buscarMapaPorCodigo(String codigoNodo);
 
-    public void eliminar(long id);
+    public boolean eliminarMapa(long id);
 
-    public List<Mapa> listar();
+    public List<Mapa> listarMapas();
 
-    public List<Mapa> autocompletar(String criterio);
-
-    public List<NodoA> buscarRutaCritica(String codigoNodo);
+    public List<Long> buscarRutaCritica(String codigoNodo);
 }

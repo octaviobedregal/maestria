@@ -6,7 +6,7 @@
         </button>
     </small>
 </h1>
-<div class="row">
+<div class="row form-group">
     <div class="col-md-12 text-right">
         <input type="file" #file (change)="leerPath($event)" hidden>
         <button type="button" class="btn btn-primary" (click)="file.click()" [disabled]="!formMapa.form.valid">
@@ -20,33 +20,35 @@
         <button type="button" class="btn btn-primary" (click)="unirNodos()" [disabled]="!formMapa.form.valid">
             <i class="fa fa-adjust">&nbsp;</i>Unir Nodos
         </button>
+        &nbsp;
+        <button type="button" class="btn btn-primary" (click)="guardarMapa()" [disabled]="!formMapa.form.valid">
+            <i class="fa fa-save">&nbsp;</i>Guardar
+        </button>
     </div>
+</div>
+<div class="row">
     <div class="col-md-6">
         <div id="network" [style.background-image]="backgroundImg"></div>
     </div>
     <div class="col-md-6">
-        <h3>Nodos:</h3>
-        <table #dtNodos class="table table-sm row-border hover"></table>
-        <h3>Caminos:</h3>
-        <table #dtCaminos class="table table-sm row-border hover"></table>
-    </div>
-    <div class="col-md-12">
         <form #formMapa="ngForm">
             <div class="form-group row">
                 <div class="col-md-2">
-                    <h4>Nombre:</h4>
+                    <label>Nombre:</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-10">
                     <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel"
                         required>
                     <div class="text-danger" [hidden]="!nombre.invalid">
                         Campo Obligatorio
                     </div>
                 </div>
+            </div>
+            <div class="form-group row">
                 <div class="col-md-2">
-                    <h4>Descripción:</h4>
+                    <label>Descripción:</label>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-10">
                     <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel"
                         required></textarea>
                     <div class="text-danger" [hidden]="!descripcion.invalid">
@@ -56,10 +58,15 @@
             </div>
         </form>
     </div>
-    <div class="col-md-12 text-right">
-        <button type="button" class="btn btn-primary" (click)="guardarMapa()" [disabled]="!formMapa.form.valid">
-            <i class="fa fa-save">&nbsp;</i>Guardar
-        </button>
+</div>
+    <div class="form-group row">
+    <div class="col-md-6">
+        <h3>Nodos:</h3>
+        <table #dtNodos class="table table-sm row-border hover"></table>
+    </div>
+    <div class="col-md-6">
+        <h3>Caminos:</h3>
+        <table #dtCaminos class="table table-sm row-border hover"></table>
     </div>
 </div>
 <ng-template #tplNodo>

@@ -7,24 +7,39 @@ package modelo.dao.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import modelo.dao.HibernateUtil;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 /**
  *
- * @author Toshiba
+ * @author BJ
  */
 public class PathClass {
 
-    public NodoA StartPoint = new NodoA();
+    public NodoA StartPoint;
     private List<NodoA> openNodes = new ArrayList();// = new List<NodoA>();
     private List<NodoA> closedNodes = new ArrayList();// = new List<NodoA>();
     NodoA lastCheckedNode;
-
+    private List<NodoA> emergenciaNodes = new ArrayList();
+    
     public PathClass() {
 
     }
+    
+    public void cargarNodosEnEmergencia(long mapId){
+        Session sesion = HibernateUtil.getSessionFactory().openSession();
+            sesion.beginTransaction();
+            Query queryNodosEmergencia = sesion.createQuery("FROM Emergencia WHERE idMapa = mapId ");
+            emergenciaNodes=queryNodosEmergencia.list();
+            sesion.getTransaction().commit();
+            sesion.close();
+    }
 
+    /* Devuelve lista de nodos
     public List<NodoA> EncontrarCamino(NodoA start) {
-        start.Antecesor = null;
+        start.setAntecesor(null);
         openNodes.add(start);
         lastCheckedNode = start;
         NodoA finalA = PathFinder();
@@ -36,51 +51,59 @@ public class PathClass {
         NodoA i = finalA;
         do {
             result.add(i);
-            i = i.Antecesor;
+            i = i.getAntecesor();
         } while (i != null);
         return result;
     }
-
-    private NodoA PathFinder() {
+    */
+    
+    public List<Long> EncontrarCamino(NodoA start) {
+        start.setAntecesor(null);
+        openNodes.add(start);
+        lastCheckedNode = start;
+        NodoA finalA = PathFinder();
+        List<Long> result = new ArrayList();
+        if (finalA == null) {
+            result.add(start.getNodo().getId());
+            return result;
+        }
+        NodoA i = finalA;
+        do {
+            result.add(i.getNodo().getId());
+            i = i.getAntecesor();
+        } while (i != null);
+        return result;
+    }
+    
+    private NodoA PathFinder() {      
+        
         while (this.openNodes.size() > 0) {
             NodoA current = this.openNodes.get(0);
             for (NodoA item : openNodes) {
-                if (item.getF() < current.getF()) {
+                if (item.F() < current.F()) {
                     current = item;
                 }
-                if (item.G > current.G) {
+                if (item.getG() > current.getG()) {
                     current = item;
                 }
             }
             this.lastCheckedNode = current;
-            if (current.getGoal()) {
+            if (current.getNodo().isObjetivo()) {
                 return current;
             }
             openNodes.remove(current);
             closedNodes.add(current);
 
-            boolean existeClose = false;
-            boolean existeOpen = false;
-            for (NodoA neighbor : current.getNeighbors()) {
-                for (NodoA closedNode : closedNodes) {
-                    if (closedNode.getId() == neighbor.getId()) {
-                        existeClose = true;
-                    }
-                }
-                for (NodoA openNode : openNodes) {
-                    if (openNode.getId() == neighbor.getId()) {
-                        existeOpen = true;
-                    }
-                }
-                if (!existeClose) {
-                    int tempG = current.G + current.PesoCaminoVecino(neighbor.getId());
-                    if (!existeOpen) {
+            for (NodoA neighbor : current.getNeighbors()) {              
+                if (!(closedNodes.stream().filter(n->n.getNodo().getId().equals(neighbor.getNodo().getId())).count()>0 || (emergenciaNodes != null && emergenciaNodes.stream().filter(n->n.getNodo().getId().equals(neighbor.getNodo().getId())).count()>0))) {
+                    int tempG = current.getG() + current.PesoCaminoVecino(neighbor.getNodo().getId());
+                    if (!(openNodes.stream().filter(n->n.getNodo().getId().equals(neighbor.getNodo().getId())).count()>0)) {
                         this.openNodes.add(neighbor);
-                    } else if (tempG >= neighbor.G) {
+                    } else if (tempG >= neighbor.getG()) {
                         continue;
                     }
-                    neighbor.G = tempG;
-                    neighbor.Antecesor = current;
+                    neighbor.setG(tempG);
+                    neighbor.setAntecesor(current);
                 }
             }
         }

@@ -4,9 +4,9 @@
   <session-factory>
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
     <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-    <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/first_alert</property>
+    <property name="hibernate.connection.url">jdbc:postgresql://50.63.12.52 :5432/first_alert</property>
     <property name="hibernate.connection.username">postgres</property>
-    <property name="hibernate.connection.password">123456</property>
+    <property name="hibernate.connection.password">PGC0m3t@</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
     <property name="hibernate.enable_lazy_load_no_trans">true</property>

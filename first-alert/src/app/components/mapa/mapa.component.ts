@@ -61,18 +61,23 @@ export class MapaComponent implements OnInit {
         this.mapaService.buscar(this.id).subscribe((data) => {
           this.mapa = data.json();
           console.log(this.mapa);
-          this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.id) + ')';
+          this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.path) + ')';
 
           for (let nodo of this.mapa.nodos) {
-            let nodoTmp = { id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y };
+            this.contNodo = nodo.numero;
+            let nodoTmp = { id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y, color: '#D2E5FF' };
             this.nodes.add(nodoTmp);
             this.controlDtNodos.row.add(nodo).draw();
           }
+          this.contNodo++;
+
           for (let camino of this.mapa.caminos) {
-            let caminoTmp = { from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } };
+            this.contCamino = camino.numero;
+            let caminoTmp = { id: camino.numero, from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } };
             this.edges.add(caminoTmp);
             this.controlDtCaminos.row.add(camino).draw();
           }
+          this.contCamino++;
 
           this.contruirMapa();
 
@@ -405,7 +410,7 @@ export class MapaComponent implements OnInit {
     try {
       let codigo = 'BL' + this.contNodo.toString();
       let nodo = { id: 0, numero: this.contNodo, codigo: codigo, x: 0, y: 0, objetivo: false };
-      let nodoVis = { id: nodo.numero, label: nodo.codigo, x: 0, y: 0 };
+      let nodoVis = { id: nodo.numero, label: nodo.codigo, x: 0, y: 0, color: '#D2E5FF' };
       this.nodes.add(nodoVis);
       this.controlDtNodos.row.add(nodo).draw();
       this.contNodo++;
@@ -486,9 +491,7 @@ export class MapaComponent implements OnInit {
         this.mapa.nodos = nodosServer;
         this.mapa.caminos = caminosServer;
 
-        console.log(this.mapa);
-
-        this.mapaService.insertar(this.mapa).subscribe((data) => {
+        this.mapaService.guardar(this.mapa).subscribe((data) => {
           toast({
             type: 'success',
             title: 'Mapa guardada con éxito'

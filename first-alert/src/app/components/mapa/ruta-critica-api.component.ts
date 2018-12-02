@@ -1,24 +1,19 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MapaService } from '../../services/mapa.service';
+import { MapaService } from 'src/app/services/mapa.service';
 import { SafeStyle, DomSanitizer } from '@angular/platform-browser';
-import { EmergenciaService } from '../../services/emergencia.service';
 import { RutaCriticaService } from 'src/app/services/ruta-critica.service';
 
 declare var vis: any;
 
 @Component({
-    selector: 'app-ruta-critica',
-    templateUrl: './ruta-critica.component.html'
+    selector: 'ruta-critica-api-root',
+    templateUrl: './ruta-critica-api.component.html'
 })
-
-
-export class RutaCriticaComponent {
-    nodoSeleccionado: any = {};
-    nodo: any = { codigo: '' };
+export class RutaCriticaApiComponent {
     nodos: any = [];
 
-    id: string = '0';
+    codigo: string = '0';
     controlDtNodos: any;
     @ViewChild('dtNodos') dtNodos: ElementRef;
     nodes: any = new vis.DataSet();
@@ -31,18 +26,27 @@ export class RutaCriticaComponent {
     constructor(private route: ActivatedRoute,
         private mapaService: MapaService,
         private rutaCriticaService: RutaCriticaService) {
+
+        window.functions = window.functions || {};
+        window.functions.borrarMenu = this.borrarMenu.bind(this);
+        window.functions.borrarMenu();
+
         this.route.params.subscribe(parametros => {
-            this.id = parametros['id'];
-            this.mapaService.buscar(this.id).subscribe((data) => {
+            this.codigo = parametros['codigo'];
+            this.mapaService.buscarPorCodigo(this.codigo).subscribe((data) => {
                 this.mapa = data.json();
                 this.nodos = this.mapa.nodos;
-                this.nodoSeleccionado = this.nodos[0];
                 this.backgroundImg = 'url(' + this.mapaService.contruirPathImagen(this.mapa.path) + ')';
                 this.contruirMapa();
             }, error => {
                 console.error(error);
             })
         });
+    }
+    borrarMenu() {
+        $('ul,footer,nav').hide();
+        $('#content-wrapper').attr('id', '');
+        $('.container-fluid').removeClass('container-fluid');
     }
 
     contruirMapa() {
@@ -104,13 +108,8 @@ export class RutaCriticaComponent {
 
         this.network = new vis.Network(container, data);
         this.network.setOptions(options);
-    }
 
-    buscarRutaCritica() {
-        for (let nodo of this.mapa.nodos) {
-            this.nodes.update([{ id: nodo.numero, color: '#D2E5FF' }]);
-        }
-        this.rutaCriticaService.buscarRutaCritica(this.nodoSeleccionado.codigo).subscribe((data) => {
+        this.rutaCriticaService.buscarRutaCritica(this.codigo).subscribe((data) => {
             let ids: any = data.json();
             for (let id of ids) {
                 for (let nodo of this.mapa.nodos) {

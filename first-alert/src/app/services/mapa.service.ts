@@ -9,30 +9,29 @@ export class MapaService {
     constructor(private http: Http) {
 
     }
+
     public listar() {
-        return this.http.get(this.API_ENDPOINT + '/listar');
+        return this.http.get(this.API_ENDPOINT + '/listar-mapas');
     }
 
-    public insertar(mapa) {
+    public guardar(mapa) {
         let body = mapa;
-        return this.http.post(this.API_ENDPOINT + '/crear', body);
+        return this.http.post(this.API_ENDPOINT + '/guardar-mapa', body);
     }
 
     public buscar(id) {
-        return this.http.get(this.API_ENDPOINT + '/buscar/' + id);
+        return this.http.get(this.API_ENDPOINT + '/buscar-mapa-por-id/' + id);
     }
 
-    public contruirPathImagen(id) {
-        return (this.API_ENDPOINT + '/ver-imagen/' + id);
+    public buscarPorCodigo(codigo) {
+        return this.http.get(this.API_ENDPOINT + '/buscar-mapa-por-codigo-nodo/' + codigo);
     }
 
-    /*
-        public editar(mapa) {
-            let body = mapa;
-            return this.http.put(this.API_ENDPOINT + '/' + mapa.id, body);
-        }
-    
-        public eliminar(id) {
-            return this.http.delete(this.API_ENDPOINT + '/' + id);
-        }*/
+    public contruirPathImagen(imagen) {
+        return (this.API_ENDPOINT + '/ver-imagen/' + encodeURI(imagen));
+    }
+
+    public eliminar(id) {
+        return this.http.get(this.API_ENDPOINT + '/eliminar-mapa/' + id);
+    }
 }
