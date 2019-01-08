@@ -24,8 +24,6 @@ export class MapasComponent implements OnInit, OnDestroy {
     constructor(private mapaService: MapaService,
         private router: Router,
         private _ngZone: NgZone) {
-
-
     }
 
     ngOnInit() {

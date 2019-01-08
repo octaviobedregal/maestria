@@ -21,7 +21,7 @@ import org.hibernate.Session;
  */
 public class GlobalCache {
 
-    public static final String PATH_IMAGENES = "/home/grupocomet/imagenes/first-alert/";// "D:\\MUNI\\";
+    public static final String PATH_IMAGENES = "D:\\MUNI\\";//"/home/grupocomet/imagenes/first-alert/";// "D:\\MUNI\\";
     public static List<Nodo> Nodos;
     public static List<Camino> Caminos;
     public static List<NodoA> NodosTemporales;

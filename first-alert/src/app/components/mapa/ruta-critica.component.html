@@ -6,7 +6,7 @@
         </button>
     </small>
 </h1>
-<div class="row">
+<div class="form-group row">
     <div class="col-md-3">
         <select class="form-control" [(ngModel)]="nodoSeleccionado" name="nodoSeleccionado">
             <option *ngFor="let nodo of nodos" [ngValue]="nodo">
@@ -19,7 +19,11 @@
             <i class="fa fa-search">&nbsp;</i>Buscar Ruta Crítica
         </button>
     </div>
-    <div class="col-md-6">
-        <div id="network" [style.background-image]="backgroundImg"></div>
+</div>
+<div class="form-group row">
+    <div class="col-md-12">
+        <div style="overflow-y: hidden;overflow-x: scroll;">
+            <div id="network" [style.background-image]="backgroundImg"></div>
+        </div>
     </div>
 </div>

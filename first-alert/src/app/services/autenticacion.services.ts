@@ -3,8 +3,8 @@ import { Http, Headers } from "@angular/http";
 
 @Injectable()
 export class AutenticacionService {
-    API_ENDPOINT: string = 'http://localhost:8090/first_alert/controlador/sesion';
-    //API_ENDPOINT: string = 'http://50.63.12.52:8080/first_alert/controlador/sesion';
+    //API_ENDPOINT: string = 'http://localhost:8090/first_alert/controlador/sesion';
+    API_ENDPOINT: string = 'http://50.63.12.52:8080/first_alert/controlador/sesion';
 
     constructor(private http: Http) {
 
@@ -33,7 +33,7 @@ export class AutenticacionService {
     traerNombreUsuarioSesion() {
         let nombreUsuario: String = "";
         if (sessionStorage.getItem('session')) {
-            nombreUsuario = sessionStorage.session.usuario.nombre;
+            nombreUsuario = JSON.parse(sessionStorage.getItem('session')).usuario.nombre;
         }
         return nombreUsuario;
     }

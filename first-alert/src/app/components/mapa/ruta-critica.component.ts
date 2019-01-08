@@ -17,6 +17,7 @@ export class RutaCriticaComponent {
     nodoSeleccionado: any = {};
     nodo: any = { codigo: '' };
     nodos: any = [];
+    idNodosEliminar: any = [];
 
     id: string = '0';
     controlDtNodos: any;
@@ -45,14 +46,28 @@ export class RutaCriticaComponent {
         });
     }
 
-    contruirMapa() {
+    generarNodosCaminosVis() {
+
+        let lista1 = this.edges.get({ returnType: 'Array' });
+        let lista2 = this.nodes.get({ returnType: 'Array' });
+
+        for (let edge of lista1) {
+            this.edges.remove({ id: edge.id });
+        }
+        for (let node of lista2) {
+            this.nodes.remove({ id: node.id });
+        }
 
         for (let nodo of this.mapa.nodos) {
-            this.nodes.add({ id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y, color: '#D2E5FF' });
+            this.nodes.add({ id: nodo.numero, label: nodo.numero.toString(), x: nodo.x, y: nodo.y, color: '#D2E5FF' });
         }
         for (let camino of this.mapa.caminos) {
-            this.edges.add({ from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } });
+            this.edges.add({ id: camino.numero, from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } });
         }
+    }
+
+    contruirMapa() {
+        this.generarNodosCaminosVis();
 
         var container = document.getElementById('network');
         var data = {
@@ -112,15 +127,49 @@ export class RutaCriticaComponent {
         }
         this.rutaCriticaService.buscarRutaCritica(this.nodoSeleccionado.codigo).subscribe((data) => {
             let ids: any = data.json();
+            this.generarNodosEliminar(ids);
+            this.generarNodosCaminosVis();
+
+            for (let id of this.idNodosEliminar) {
+                let numero = this.buscarNumeroNodo(id);
+                this.nodes.remove({ id: numero });
+            }
+
             for (let id of ids) {
-                for (let nodo of this.mapa.nodos) {
-                    if (id === nodo.id) {
-                        this.nodes.update([{ id: nodo.numero, color: 'green' }]);
-                    }
-                }
+                let numero = this.buscarNumeroNodo(id);
+                this.nodes.update([{ id: numero, color: 'green' }]);
             }
         }, error => {
             console.error(error);
         });
+    }
+
+    generarNodosEliminar(idsRutaCritica) {
+        this.idNodosEliminar = this.nodos.map(function (nodo) {
+            return nodo.id;
+        });
+
+        for (let id of idsRutaCritica) {
+            this.eliminarIdNodoNodosEliminar(id);
+        }
+    }
+
+    buscarNumeroNodo(id) {
+        for (let nodo of this.mapa.nodos) {
+            if (id === nodo.id) {
+                return nodo.numero;
+            }
+        }
+    }
+
+    eliminarIdNodoNodosEliminar(id) {
+        let cont = 0;
+        for (let idNodoEliminar of this.idNodosEliminar) {
+            if (idNodoEliminar === id) {
+                this.idNodosEliminar.splice(cont, 1);
+                break;
+            }
+            cont++;
+        }
     }
 }

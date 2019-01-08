@@ -65,7 +65,7 @@ export class MapaComponent implements OnInit {
 
           for (let nodo of this.mapa.nodos) {
             this.contNodo = nodo.numero;
-            let nodoTmp = { id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y, color: '#D2E5FF' };
+            let nodoTmp = { id: nodo.numero, label: nodo.numero.toString(), x: nodo.x, y: nodo.y, color: '#D2E5FF' };
             this.nodes.add(nodoTmp);
             this.controlDtNodos.row.add(nodo).draw();
           }
@@ -112,6 +112,10 @@ export class MapaComponent implements OnInit {
           className: 'select-checkbox',
           width: '5%',
           targets: 0
+        }, {
+          title: '#',
+          data: 'numero',
+          width: 'auto'
         }, {
           title: 'BL',
           data: 'codigo',
@@ -410,7 +414,7 @@ export class MapaComponent implements OnInit {
     try {
       let codigo = 'BL' + this.contNodo.toString();
       let nodo = { id: 0, numero: this.contNodo, codigo: codigo, x: 0, y: 0, objetivo: false };
-      let nodoVis = { id: nodo.numero, label: nodo.codigo, x: 0, y: 0, color: '#D2E5FF' };
+      let nodoVis = { id: nodo.numero, label: nodo.numero.toString(), x: 0, y: 0, color: '#D2E5FF' };
       this.nodes.add(nodoVis);
       this.controlDtNodos.row.add(nodo).draw();
       this.contNodo++;
@@ -496,6 +500,9 @@ export class MapaComponent implements OnInit {
             type: 'success',
             title: 'Mapa guardada con éxito'
           })
+          this._ngZone.run(() => {
+            this.router.navigate(['/mapas']);
+          });
         }, error => {
           toast({
             type: 'error',

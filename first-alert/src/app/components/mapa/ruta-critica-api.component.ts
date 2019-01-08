@@ -21,6 +21,7 @@ export class RutaCriticaApiComponent {
     network: any;
     mapa: any = { idCompanhia: 1, nuevoPath: false, path: '', contentPath: '', nombre: '-', descripcion: '--' };
     emergencias: any[] = [];
+    idNodosEliminar: any = [];
     backgroundImg: SafeStyle;
 
     constructor(private route: ActivatedRoute,
@@ -52,7 +53,7 @@ export class RutaCriticaApiComponent {
     contruirMapa() {
 
         for (let nodo of this.mapa.nodos) {
-            this.nodes.add({ id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y, color: '#D2E5FF' });
+            this.nodes.add({ id: nodo.numero, label: nodo.numero.toString(), x: nodo.x, y: nodo.y, color: '#D2E5FF' });
         }
         for (let camino of this.mapa.caminos) {
             this.edges.add({ from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } });
@@ -111,15 +112,48 @@ export class RutaCriticaApiComponent {
 
         this.rutaCriticaService.buscarRutaCritica(this.codigo).subscribe((data) => {
             let ids: any = data.json();
-            for (let id of ids) {
-                for (let nodo of this.mapa.nodos) {
-                    if (id === nodo.id) {
-                        this.nodes.update([{ id: nodo.numero, color: 'green' }]);
-                    }
-                }
+            this.generarNodosEliminar(ids);
+
+            for (let id of this.idNodosEliminar) {
+                let numero = this.buscarNumeroNodo(id);
+                this.nodes.remove({ id: numero });
             }
+
+            for (let id of ids) {
+                let numero = this.buscarNumeroNodo(id);
+                this.nodes.update([{ id: numero, color: 'green' }]);
+            }
+
         }, error => {
             console.error(error);
         });
+    }
+    generarNodosEliminar(idsRutaCritica) {
+        this.idNodosEliminar = this.nodos.map(function (nodo) {
+            return nodo.id;
+        });
+
+        for (let id of idsRutaCritica) {
+            this.eliminarIdNodoNodosEliminar(id);
+        }
+    }
+
+    buscarNumeroNodo(id) {
+        for (let nodo of this.mapa.nodos) {
+            if (id === nodo.id) {
+                return nodo.numero;
+            }
+        }
+    }
+
+    eliminarIdNodoNodosEliminar(id) {
+        let cont = 0;
+        for (let idNodoEliminar of this.idNodosEliminar) {
+            if (idNodoEliminar === id) {
+                this.idNodosEliminar.splice(cont, 1);
+                break;
+            }
+            cont++;
+        }
     }
 }

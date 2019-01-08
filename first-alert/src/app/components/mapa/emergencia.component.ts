@@ -47,7 +47,7 @@ export class EmergenciaComponent implements OnInit {
                 })
             }, error => {
                 console.error(error);
-            })
+            });
         });
     }
 
@@ -82,7 +82,7 @@ export class EmergenciaComponent implements OnInit {
     contruirMapa() {
 
         for (let nodo of this.mapa.nodos) {
-            this.nodes.add({ id: nodo.numero, label: nodo.codigo, x: nodo.x, y: nodo.y ,color: '#D2E5FF'});
+            this.nodes.add({ id: nodo.numero, label: nodo.numero.toString(), x: nodo.x, y: nodo.y, color: '#D2E5FF' });
         }
         for (let camino of this.mapa.caminos) {
             this.edges.add({ from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: { color: 'blue' } });
@@ -150,15 +150,15 @@ export class EmergenciaComponent implements OnInit {
         let optNodos: any = {
             columns: [
                 {
-                    title: 'Está en Emergencia',
+                    title: '¿Emergencia?',
                     defaultContent: '',
                     className: 'select-checkbox',
-                    width: '50%',
+                    width: '5%',
                     targets: 0
                 }, {
                     title: 'Nodo',
                     data: 'codigo',
-                    width: '50%'
+                    width: 'auto'
                 }],
             paging: false,
             bFilter: false,
@@ -175,9 +175,7 @@ export class EmergenciaComponent implements OnInit {
             buttons: []
         };
 
-
         this.controlDtNodos = $(this.dtNodos.nativeElement).DataTable(optNodos);
-
         this.controlDtNodos.on('select', function (e, dt, type, indexes) {
             if (type === 'row') {
                 window.functions.pintarNodoSeleccionado(indexes[0], true);
@@ -186,13 +184,10 @@ export class EmergenciaComponent implements OnInit {
         this.controlDtNodos.on('deselect', function (e, dt, type, indexes) {
             if (type === 'row') {
                 window.functions.pintarNodoSeleccionado(indexes[0], false);
-
             }
         });
 
         window.functions = window.functions || {};
-
-        //window.functions.editar = this.ver.bind(this);
         window.functions.pintarNodoSeleccionado = this.pintarNodoSeleccionado.bind(this);
     }
 

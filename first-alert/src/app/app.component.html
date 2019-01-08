@@ -16,6 +16,7 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
+                {{nombreUsuario}}
                 <i class="fas fa-user-circle fa-fw"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
@@ -38,13 +39,20 @@
         </li>
         <li class="nav-item" routerLinkActive="active">
             <a class="nav-link" routerLink="/mapas">
-                <i class="fas fa-fw fa-map">&nbsp;</i>
-                <span>Mapas</span>
+                <i class="fas fa-fw fa-edit">&nbsp;</i>
+                <span>Gestión de Mapas</span>
             </a>
             <a class="nav-link" routerLink="/mapa" hidden></a>
             <a class="nav-link" routerLink="/emergencia" hidden></a>
             <a class="nav-link" routerLink="/ruta-critica" hidden></a>
         </li>
+        
+        <li class="nav-item" routerLinkActive="active">
+                <a class="nav-link" routerLink="/mapas-riesgo">
+                    <i class="fas fa-fw fa-map">&nbsp;</i>
+                    <span>Mapas de Riesgo</span>
+                </a>
+            </li>
     </ul>
 
     <div id="content-wrapper">
@@ -74,7 +82,7 @@
             <div class="modal-body">¿Desea realizar esta acción?</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                <a class="btn btn-primary" routerLink="/Ingreso" data-dismiss="modal">Si</a>
+                <button class="btn btn-primary" (click)="cerrarSesion()" data-dismiss="modal">Si</button>
             </div>
         </div>
     </div>

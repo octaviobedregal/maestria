@@ -27,6 +27,7 @@ import { EmergenciaService } from './services/emergencia.service';
 import { RutaCriticaComponent } from './components/mapa/ruta-critica.component';
 import { RutaCriticaService } from './services/ruta-critica.service';
 import { RutaCriticaApiComponent } from './components/mapa/ruta-critica-api.component';
+import { MapasRiesgoComponent } from './components/mapa/mapas-riesgo.component';
 
 
 
@@ -37,6 +38,7 @@ import { RutaCriticaApiComponent } from './components/mapa/ruta-critica-api.comp
     IngresoComponent,
     InicioComponent,
     MapasComponent,
+    MapasRiesgoComponent,
     MapaComponent,
     EmergenciaComponent,
     RutaCriticaComponent

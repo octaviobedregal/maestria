@@ -6,7 +6,40 @@
         </button>
     </small>
 </h1>
-<div class="row form-group">
+<div class="col-md-12">
+    <form #formMapa="ngForm">
+        <div class="form-group row">
+            <div class="col-md-1">
+                <label>Nombre:</label>
+            </div>
+            <div class="col-md-5">
+                <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel"
+                    required>
+                <div class="text-danger" [hidden]="!nombre.invalid">
+                    Campo Obligatorio
+                </div>
+            </div>
+            <div class="col-md-1">
+                <label>Descripción:</label>
+            </div>
+            <div class="col-md-5">
+                <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel"
+                    required></textarea>
+                <div class="text-danger" [hidden]="!descripcion.invalid">
+                    Campo Obligatorio
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="form-group row">
+    <div class="col-md-12">
+        <div style="overflow-y: hidden;overflow-x: scroll;">
+            <div id="network" [style.background-image]="backgroundImg"></div>
+        </div>
+    </div>
+</div>
+<div class="form-group row">
     <div class="col-md-12 text-right">
         <input type="file" #file (change)="leerPath($event)" hidden>
         <button type="button" class="btn btn-primary" (click)="file.click()" [disabled]="!formMapa.form.valid">
@@ -26,40 +59,7 @@
         </button>
     </div>
 </div>
-<div class="row">
-    <div class="col-md-6">
-        <div id="network" [style.background-image]="backgroundImg"></div>
-    </div>
-    <div class="col-md-6">
-        <form #formMapa="ngForm">
-            <div class="form-group row">
-                <div class="col-md-2">
-                    <label>Nombre:</label>
-                </div>
-                <div class="col-md-10">
-                    <input type="text" class="form-control" [(ngModel)]="mapa.nombre" name="nombre" #nombre="ngModel"
-                        required>
-                    <div class="text-danger" [hidden]="!nombre.invalid">
-                        Campo Obligatorio
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-2">
-                    <label>Descripción:</label>
-                </div>
-                <div class="col-md-10">
-                    <textarea class="form-control" [(ngModel)]="mapa.descripcion" name="descripcion" #descripcion="ngModel"
-                        required></textarea>
-                    <div class="text-danger" [hidden]="!descripcion.invalid">
-                        Campo Obligatorio
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-    <div class="form-group row">
+<div class="form-group row">
     <div class="col-md-6">
         <h3>Nodos:</h3>
         <table #dtNodos class="table table-sm row-border hover"></table>
