@@ -28,6 +28,7 @@ import { RutaCriticaComponent } from './components/mapa/ruta-critica.component';
 import { RutaCriticaService } from './services/ruta-critica.service';
 import { RutaCriticaApiComponent } from './components/mapa/ruta-critica-api.component';
 import { MapasRiesgoComponent } from './components/mapa/mapas-riesgo.component';
+import { MapaRiesgoApiComponent } from './components/mapa/mapa-riesgo-api.component';
 
 
 
@@ -35,6 +36,7 @@ import { MapasRiesgoComponent } from './components/mapa/mapas-riesgo.component';
   declarations: [
     AppComponent,
     RutaCriticaApiComponent,
+    MapaRiesgoApiComponent,
     IngresoComponent,
     InicioComponent,
     MapasComponent,

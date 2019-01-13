@@ -8,9 +8,11 @@ import { EmergenciaComponent } from "./components/mapa/emergencia.component";
 import { RutaCriticaComponent } from "./components/mapa/ruta-critica.component";
 import { RutaCriticaApiComponent } from "./components/mapa/ruta-critica-api.component";
 import { MapasRiesgoComponent } from "./components/mapa/mapas-riesgo.component";
+import { MapaRiesgoApiComponent } from "./components/mapa/mapa-riesgo-api.component";
 
 const APP_ROUTES: Routes = [
     { path: 'ruta-critica-api/:codigo', component: RutaCriticaApiComponent },
+    { path: 'mapa-riesgo-api/:id', component: MapaRiesgoApiComponent },
     { path: 'ingreso', component: IngresoComponent },
     { path: 'inicio', component: InicioComponent, canActivate: [Guardian] },
     { path: 'mapas', component: MapasComponent, canActivate: [Guardian] },
