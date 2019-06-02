@@ -1,0 +1,149 @@
+<html>
+    <head>
+        <title>Ruta Crítica</title>
+        <script type="text/javascript" src="jquery-3.4.1.min.js"></script>
+        <script type="text/javascript" src="vis.min.js"></script>
+        <link href="vis.min.css" rel="stylesheet" type="text/css" />
+        <style type="text/css">
+            #network {
+                width: 1000px;
+                height: 400px;
+                background-size: 100% 100% !important;
+                background: aliceblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="network" ></div>
+        <script type="text/javascript">
+            var getUrlParameter = function getUrlParameter(sParam) {
+                var sPageURL = window.location.search.substring(1),
+                        sURLVariables = sPageURL.split('&'),
+                        sParameterName,
+                        i;
+
+                for (i = 0; i < sURLVariables.length; i++) {
+                    sParameterName = sURLVariables[i].split('=');
+
+                    if (sParameterName[0] === sParam) {
+                        return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+                    }
+                }
+            };
+
+            var BL = getUrlParameter('BL');
+            var numero;
+            var idNodosEliminar;
+            var serverAPI = 'http://50.63.12.52:8080/first_alert/controlador/mapa/';
+
+            function buscarMapa() {
+                $.get(serverAPI + 'buscar-mapa-por-codigo-nodo/' + BL, {}, function (mapa) {
+                    $('#network').attr('style', 'background-image:url("http://50.63.12.52:8080/first_alert/controlador/mapa/ver-imagen/' + mapa.path + '");');
+                    contruirMapa(mapa);
+                });
+            }
+            function contruirMapa(mapa) {
+                var nodesTmp = [];
+                var edgesTmp = [];
+                $.each(mapa.nodos, function (index, nodo) {
+                    nodesTmp.push({id: nodo.numero, label: nodo.numero.toString(), x: nodo.x, y: nodo.y, color: '#D2E5FF'});
+                });
+                $.each(mapa.caminos, function (index, camino) {
+                    edgesTmp.push({from: camino.numeroNodoInicio, to: camino.numeroNodoFin, label: camino.peso.toString(), font: {color: 'blue'}});
+                });
+                var nodes = new vis.DataSet(nodesTmp);
+                var edges = new vis.DataSet(edgesTmp);
+                var container = document.getElementById('network');
+                var data = {
+                    nodes: nodes,
+                    edges: edges
+                };
+                var locales = {
+                    en: {
+                        edit: 'Edit',
+                        del: 'Delete selected',
+                        back: 'Back',
+                        addNode: 'Add Node',
+                        addEdge: 'Add Edge',
+                        editNode: 'Edit Node',
+                        editEdge: 'Edit Edge',
+                        addDescription: 'Click in an empty space to place a new node.',
+                        edgeDescription: 'Click on a node and drag the edge to another node to connect them.',
+                        editEdgeDescription: 'Click on the control points and drag them to a node to connect to it.',
+                        createEdgeError: 'Cannot link edges to a cluster.',
+                        deleteClusterError: 'Clusters cannot be deleted.',
+                        editClusterError: 'Clusters cannot be edited.'
+                    }
+                }
+
+                var options = {
+                    autoResize: false,
+                    height: '100%',
+                    width: '100%',
+                    locale: 'en',
+                    locales: locales,
+                    clickToUse: false,
+                    "edges": {
+                        "smooth": false
+                    },
+                    physics: {
+                        enabled: false, // Stops node movement during display
+                        stabilization: {// Determines an initial layout; enabled by default
+                            enabled: false,
+                            iterations: 1000
+                        }
+                    }, // defined in the physics module.
+                    "interaction": {
+                        "dragView": false,
+                        zoomView: false,
+                        "dragNodes": false
+                    }
+                };
+                var network = new vis.Network(container, data);
+                network.setOptions(options);
+                $.get(serverAPI + 'buscar-ruta-critica/' + BL, {}, function (ids) {
+                    generarNodosEliminar(ids, mapa.nodos);
+                    $.each(idNodosEliminar, function (index, id) {
+                        buscarNumeroNodo(mapa, id);
+                        nodes.remove({id: numero});
+                    });
+                    $.each(ids, function (index, id) {
+                        buscarNumeroNodo(mapa, id);
+                        nodes.update([{id: numero, color: 'green'}]);
+                    });
+                });
+            }
+            function generarNodosEliminar(idsRutaCritica, nodos) {
+                idNodosEliminar = [];
+                $.each(nodos, function (index, nodo) {
+                    idNodosEliminar.push(nodo.id);
+                });
+                $.each(idsRutaCritica, function (index, id) {
+                    eliminarIdNodoNodosEliminar(id);
+                });
+            }
+
+            function eliminarIdNodoNodosEliminar(id) {
+                var cont = 0;
+                $.each(idNodosEliminar, function (index, idNodoEliminar) {
+                    if (idNodoEliminar === id) {
+                        idNodosEliminar.splice(cont, 1);
+                        return false;
+                    }
+                    cont++;
+                });
+            }
+
+            function buscarNumeroNodo(mapa, id) {
+                $.each(mapa.nodos, function (index, nodo) {
+                    if (id === nodo.id) {
+                        numero = nodo.numero;
+                        return false;
+                    }
+                });
+            }
+
+            buscarMapa();
+        </script>
+    </body>
+</html>
